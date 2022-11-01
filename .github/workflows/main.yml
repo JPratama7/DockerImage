@@ -25,6 +25,7 @@ jobs:
       - name: Build and push ${{ steps.date.outputs.date }}
         uses: docker/build-push-action@v3
         with:
+          context: .
           file: php/74/Dockerfile
           push: true
           tags: jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}
