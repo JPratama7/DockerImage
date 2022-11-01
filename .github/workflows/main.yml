@@ -1,0 +1,44 @@
+name: Image Builder
+
+on: [push]
+
+jobs:
+  PHP74:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y%m%d')"
+      - name: Setup docker-slim
+        run: curl -sL https://raw.githubusercontent.com/docker-slim/docker-slim/master/scripts/install-dockerslim.sh | sudo -E bash -
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push ${{ steps.date.outputs.date }}
+        uses: docker/build-push-action@v3
+        with:
+          file: php/74/Dockerfile
+          push: true
+          tags: jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}
+      - name: Build and push latest
+        uses: docker/build-push-action@v3
+        with:
+          file: Python/3.10/Dockerfile
+          push: true
+          tags: jpratama7/php-fpm-nginx:latest
+      - name: Build Docker Slim
+        run: |
+          docker pull jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}
+          docker pull jpratama7/php-fpm-nginx:latest
+          docker-slim build --include-shell --include-path /bin/ --include-path /usr/ --http-probe-off --target jpratama7/php-fpm-nginx:latest --tag jpratama7/php-fpm-nginx:latest-slim
+          docker push jpratama7/php-fpm-nginx:latest-slim
+          docker-slim build --include-shell --include-path /bin/ --include-path /usr/ --http-probe-off --target jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }} --tag jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}-slim
+          docker push jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}-slim
