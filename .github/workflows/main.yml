@@ -22,19 +22,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push ${{ steps.date.outputs.date }}
-        uses: docker/build-push-action@v3.2.0
-        with:
-          context: .
-          file: php/74/Dockerfile
-          push: true
-          tags: jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}
-      - name: Build and push latest
-        uses: docker/build-push-action@v3
-        with:
-          file: Python/3.10/Dockerfile
-          push: true
-          tags: jpratama7/php-fpm-nginx:latest
+      - name: |
+          docker build --file php/74/Dockerfile --tag jpratama7/php-fpm-nginx:latest
+          docker push jpratama7/php-fpm-nginx:latest
+          docker build --file php/74/Dockerfile --tag jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}
+          docker push jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}
       - name: Build Docker Slim
         run: |
           docker pull jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}
