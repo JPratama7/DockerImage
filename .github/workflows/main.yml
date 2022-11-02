@@ -24,9 +24,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build Docker
         run : |
-          docker build -f php/74/Dockerfile --tag jpratama7/php-fpm-nginx:latest
+          docker build -f php/74/Dockerfile -t jpratama7/php-fpm-nginx:latest .
           docker push jpratama7/php-fpm-nginx:latest
-          docker build -f php/74/Dockerfile --tag jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}
+          docker build -f php/74/Dockerfile -t jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }} .
           docker push jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}
       - name: Build Docker Slim
         run: |
