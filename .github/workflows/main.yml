@@ -22,7 +22,8 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: |
+      - name: Build Docker
+        run : |
           docker build --file php/74/Dockerfile --tag jpratama7/php-fpm-nginx:latest
           docker push jpratama7/php-fpm-nginx:latest
           docker build --file php/74/Dockerfile --tag jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}
