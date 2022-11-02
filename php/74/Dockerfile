@@ -7,7 +7,7 @@ ENV fpm_conf /usr/local/etc/php-fpm.d/www.conf
 ENV php_vars /usr/local/etc/php/conf.d/docker-vars.ini
 
 ENV NGINX_VERSION 1.23.2
-ENV LUA_MODULE_VERSION 0.10.22
+ENV LUA_MODULE_VERSION 1.19.10
 ENV DEVEL_KIT_MODULE_VERSION 0.3.2
 ENV GEOIP2_MODULE_VERSION 3.2
 ENV LUAJIT_LIB=/usr/lib
