@@ -171,39 +171,45 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     supervisor \
     curl \
     libcurl \
-    libzip-dev \
-    bzip2-dev \
-    imap-dev \
-    openssl-dev \
+    libpq \
     git \
     python3 \
-    python3-dev \
-    augeas-dev \
-    libressl-dev \
+    py3-pip \
     ca-certificates \
     dialog \
     autoconf \
     make \
-    gcc \
+    openssl-dev \
+    libressl-dev \
+    libzip-dev \
+    bzip2-dev \
+    icu-dev \
+    gcc && \
+    apk add --no-cache --virtual .sys-deps \
     musl-dev \
     linux-headers \
+    augeas-dev \
     libmcrypt-dev \
     libpng-dev \
-    icu-dev \
-    libpq \
     libxslt-dev \
+    python3-dev \
     libffi-dev \
     freetype-dev \
     sqlite-dev \
+    imap-dev \
     libjpeg-turbo-dev \
     postgresql-dev && \
     docker-php-ext-configure gd \
+      --enable-gd \
       --with-freetype \
       --with-jpeg && \
+    docker-php-ext-install gd && \
+     pip install --upgrade pip && \
     #curl iconv session
     #docker-php-ext-install pdo_mysql pdo_sqlite mysqli mcrypt gd exif intl xsl json soap dom zip opcache && \
-    docker-php-ext-install iconv pdo_mysql pdo_sqlite pgsql pdo_pgsql mysqli gd exif intl xsl json soap dom zip opcache && \
-    pecl install xdebug-2.9.2 && \
+    # docker-php-ext-install iconv pdo_mysql pdo_sqlite pgsql pdo_pgsql mysqli gd exif intl xsl json soap dom zip opcache && \
+    docker-php-ext-install pdo_mysql mysqli pdo_sqlite pgsql pdo_pgsql exif intl xsl soap zip && \
+    pecl install xdebug-3.1.4 && \
     pecl install -o -f redis && \
     echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini && \
     docker-php-source delete && \
@@ -213,12 +219,12 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     mkdir -p /var/log/supervisor && \
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     php composer-setup.php --quiet --install-dir=/usr/bin --filename=composer && \
-    rm composer-setup.php && \
-    pip3 install -U pip && \
+    rm composer-setup.php &&\
+  #  pip3 install -U pip && \
     pip3 install -U certbot && \
     mkdir -p /etc/letsencrypt/webrootauth && \
-    apk del gcc musl-dev linux-headers libffi-dev augeas-dev python3-dev make autoconf
-#    apk del .sys-deps
+    apk del gcc musl-dev linux-headers libffi-dev augeas-dev python3-dev make autoconf && \
+    apk del .sys-deps
 #    ln -s /usr/bin/php7 /usr/bin/php
 
 ADD conf/supervisord.conf /etc/supervisord.conf
@@ -236,13 +242,6 @@ mkdir /var/www/html/
 ADD conf/nginx-site.conf /etc/nginx/sites-available/default.conf
 ADD conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
 RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
-
-## disabled due to license changes (to fix in next release)
-# Add GeoLite2 databases (https://dev.maxmind.com/geoip/geoip2/geolite2/)
-#RUN curl -fSL http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz -o /etc/nginx/GeoLite2-City.mmdb.gz \
-#    && curl -fSL http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz -o /etc/nginx/GeoLite2-Country.mmdb.gz \
-#    && gunzip /etc/nginx/GeoLite2-City.mmdb.gz \
-#    && gunzip /etc/nginx/GeoLite2-Country.mmdb.gz
 
 # tweak php-fpm config
 RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
@@ -266,7 +265,11 @@ RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
         -e "s/^;clear_env = no$/clear_env = no/" \
         ${fpm_conf}
 #    ln -s /etc/php7/php.ini /etc/php7/conf.d/php.ini && \
-#    find /etc/php7/conf.d/ -name "*.ini" -exec sed -i -re 's/^(\s*)#(.*)/\1;\2/g' {} \;
+RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
+	sed -i \
+	    -e "s/;opcache/opcache/g" \
+	    -e "s/;zend_extension=opcache/zend_extension=opcache/g" \
+            /usr/local/etc/php/php.ini
 
 
 # Add Scripts
