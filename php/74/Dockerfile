@@ -281,7 +281,8 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
 	sed -i \
 	    -e "s/;opcache/opcache/g" \
 	    -e "s/;zend_extension=opcache/zend_extension=opcache/g" \
-            /usr/local/etc/php/php.ini
+            /usr/local/etc/php/php.ini \
+      && rm -rf /usr/src/
 
 
 # Add Scripts
