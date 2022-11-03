@@ -6,7 +6,7 @@ ENV php_conf /usr/local/etc/php-fpm.conf
 ENV fpm_conf /usr/local/etc/php-fpm.d/www.conf
 ENV php_vars /usr/local/etc/php/conf.d/docker-vars.ini
 
-ENV NGINX_VERSION 1.23.2
+ENV NGINX_VERSION 1.22.1
 ENV LUA_MODULE_VERSION 0.10.19
 ENV DEVEL_KIT_MODULE_VERSION 0.3.1
 ENV VERSION_ZLIB=zlib-1.2.11
@@ -70,6 +70,8 @@ RUN GPG_KEYS=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
     --add-module=/usr/src/ngx_devel_kit-$DEVEL_KIT_MODULE_VERSION \
     --add-module=/usr/src/lua-nginx-module-$LUA_MODULE_VERSION \
     --with-openssl=/usr/src/$VERSION_OPENSSL \
+    --with-cc-opt='-O3 -pipe -Wformat -Werror=format-security -fstack-clash-protection -flto -fcf-protection -fipa-pta -fsched-pressure -mavx -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure' \
+    --with-ld-opt='-Wl,-O4,--sort-common,--gc-sections,--as-needed,-z,relro,-z,now' \
   " \
   && addgroup -S nginx \
   && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \ 
