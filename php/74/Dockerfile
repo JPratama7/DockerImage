@@ -6,7 +6,7 @@ ENV php_conf /usr/local/etc/php-fpm.conf
 ENV fpm_conf /usr/local/etc/php-fpm.d/www.conf
 ENV php_vars /usr/local/etc/php/conf.d/docker-vars.ini
 
-ENV NGINX_VERSION 1.21.6
+ENV NGINX_VERSION 1.23.2
 ENV LUA_MODULE_VERSION 0.10.19
 ENV DEVEL_KIT_MODULE_VERSION 0.3.1
 ENV VERSION_ZLIB=zlib-1.2.11
@@ -289,8 +289,8 @@ ADD php/74/scripts/letsencrypt-renew /usr/bin/letsencrypt-renew
 RUN chmod 755 /usr/bin/pull && chmod 755 /usr/bin/push && chmod 755 /usr/bin/letsencrypt-setup && chmod 755 /usr/bin/letsencrypt-renew && chmod 755 /start.sh
 
 # copy in code
-ADD src/ /var/www/html/
-ADD errors/ /var/www/errors
+ADD php/74/src/ /var/www/html/
+ADD php/74/errors/ /var/www/errors
 
 
 EXPOSE 443 80
