@@ -69,7 +69,7 @@ RUN GPG_KEYS=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
     --with-http_v2_module \
     --add-module=/usr/src/ngx_devel_kit-$DEVEL_KIT_MODULE_VERSION \
     --add-module=/usr/src/lua-nginx-module-$LUA_MODULE_VERSION \
-    --with-openssl=/usr/src/$VERSION_OPENSSL
+    --with-openssl=/usr/src/$VERSION_OPENSSL \
   " \
   && addgroup -S nginx \
   && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \ 
