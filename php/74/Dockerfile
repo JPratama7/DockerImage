@@ -2,26 +2,22 @@ FROM php:7.4-fpm-alpine
 
 LABEL maintainer="JPratama7 <josepratama080@gmail.com>"
 
-ENV php_conf /usr/local/etc/php-fpm.conf
-ENV fpm_conf /usr/local/etc/php-fpm.d/www.conf
-ENV php_vars /usr/local/etc/php/conf.d/docker-vars.ini
+ENV php_conf /usr/local/etc/php-fpm.conf \
+    fpm_conf /usr/local/etc/php-fpm.d/www.conf \
+    php_vars /usr/local/etc/php/conf.d/docker-vars.ini \
+    NGINX_VERSION 1.22.1 \
+    LUA_MODULE_VERSION 0.10.19 \
+    DEVEL_KIT_MODULE_VERSION 0.3.1 \
+    VERSION_ZLIB=zlib-1.2.11 \
+    VERSION_PCRE=pcre-8.41 \
+    VERSION_OPENSSL=openssl-1.1.1s \
+    LUAJIT_LIB=/usr/lib \
+    LUAJIT_INC=/usr/include/luajit-2.1 \
+    # resolves #166
+    LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
-ENV NGINX_VERSION 1.22.1
-ENV LUA_MODULE_VERSION 0.10.19
-ENV DEVEL_KIT_MODULE_VERSION 0.3.1
-ENV VERSION_ZLIB=zlib-1.2.11
-ENV VERSION_PCRE=pcre-8.41
-ENV VERSION_OPENSSL=openssl-1.1.1s
-
-
-ENV LUAJIT_LIB=/usr/lib
-ENV LUAJIT_INC=/usr/include/luajit-2.1
-
-# resolves #166
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
-RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv
-
-RUN GPG_KEYS=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
+RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv \ 
+  && GPG_KEYS=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
   && CONFIG="\
     --prefix=/etc/nginx \
     --sbin-path=/usr/sbin/nginx \
@@ -239,22 +235,6 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     apk del .sys-deps
 #    ln -s /usr/bin/php7 /usr/bin/php
 
-ADD php/74/conf/supervisord.conf /etc/supervisord.conf
-
-# Copy our nginx config
-RUN rm -Rf /etc/nginx/nginx.conf
-ADD php/74/conf/nginx.conf /etc/nginx/nginx.conf
-
-# nginx site conf
-RUN mkdir -p /etc/nginx/sites-available/ && \
-mkdir -p /etc/nginx/sites-enabled/ && \
-mkdir -p /etc/nginx/ssl/ && \
-rm -Rf /var/www/* && \
-mkdir /var/www/html/
-ADD php/74/conf/nginx-site.conf /etc/nginx/sites-available/default.conf
-ADD php/74/conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
-RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
-
 # tweak php-fpm config
 RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
     echo "upload_max_filesize = 100M"  >> ${php_vars} &&\
@@ -285,18 +265,35 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
       && rm -rf /usr/src/
 
 
-# Add Scripts
-ADD php/74/scripts/start.sh /start.sh
-ADD php/74/scripts/pull /usr/bin/pull
-ADD php/74/scripts/push /usr/bin/push
-ADD php/74/scripts/letsencrypt-setup /usr/bin/letsencrypt-setup
-ADD php/74/scripts/letsencrypt-renew /usr/bin/letsencrypt-renew
-RUN chmod 755 /usr/bin/pull && chmod 755 /usr/bin/push && chmod 755 /usr/bin/letsencrypt-setup && chmod 755 /usr/bin/letsencrypt-renew && chmod 755 /start.sh
 
-# copy in code
-ADD php/74/src/ /var/www/html/
-ADD php/74/errors/ /var/www/errors
+# Configure
+RUN rm -Rf /etc/nginx/nginx.conf \
+    && mkdir -p /etc/nginx/sites-available/ \
+    && mkdir -p /etc/nginx/sites-enabled/ \ 
+    && mkdir -p /etc/nginx/ssl/ \ 
+    && rm -Rf /var/www/* \ 
+    && mkdir /var/www/html/
 
+# Copy our config
+ADD php/74/conf/nginx.conf /etc/nginx/nginx.conf \
+    php/74/conf/supervisord.conf /etc/supervisord.conf \
+    php/74/conf/nginx-site.conf /etc/nginx/sites-available/default.conf \
+    php/74/conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf \
+    php/74/scripts/start.sh /start.sh \
+    php/74/scripts/pull /usr/bin/pull \
+    php/74/scripts/push /usr/bin/push \
+    php/74/scripts/letsencrypt-setup /usr/bin/letsencrypt-setup \
+    php/74/scripts/letsencrypt-renew /usr/bin/letsencrypt-renew \
+    php/74/src/ /var/www/html/ \
+    php/74/errors/ /var/www/errors
+
+# Configure file
+RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf \
+    && chmod 755 /usr/bin/pull \
+    && chmod 755 /usr/bin/push \
+    && chmod 755 /usr/bin/letsencrypt-setup \
+    && chmod 755 /usr/bin/letsencrypt-renew \
+    && chmod 755 /start.sh
 
 EXPOSE 443 80
 
