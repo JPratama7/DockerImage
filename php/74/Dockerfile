@@ -12,9 +12,10 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
     VERSION_PCRE=pcre-8.41 \
     VERSION_OPENSSL=openssl-1.1.1s \
     LUAJIT_LIB=/usr/lib \
-    LUAJIT_INC=/usr/include/luajit-2.1 \
-    # resolves #166
-    LD_PRELOAD=/usr/lib/preloadable_libiconv.so php
+    LUAJIT_INC=/usr/include/luajit-2.1
+
+# resolves #166
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
 RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv \ 
   && GPG_KEYS=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
