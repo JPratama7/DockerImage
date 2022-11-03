@@ -278,16 +278,16 @@ RUN rm -Rf /etc/nginx/nginx.conf \
 
 # Copy our config
 ADD php/74/conf/nginx.conf /etc/nginx/nginx.conf \
-    php/74/conf/supervisord.conf /etc/supervisord.conf \
-    php/74/conf/nginx-site.conf /etc/nginx/sites-available/default.conf \
-    php/74/conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf \
-    php/74/scripts/start.sh /start.sh \
-    php/74/scripts/pull /usr/bin/pull \
-    php/74/scripts/push /usr/bin/push \
-    php/74/scripts/letsencrypt-setup /usr/bin/letsencrypt-setup \
-    php/74/scripts/letsencrypt-renew /usr/bin/letsencrypt-renew \
-    php/74/src/ /var/www/html/ \
-    php/74/errors/ /var/www/errors
+ADD php/74/conf/supervisord.conf /etc/supervisord.conf \
+ADD php/74/conf/nginx-site.conf /etc/nginx/sites-available/default.conf \
+ADD php/74/conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf \
+ADD php/74/scripts/start.sh /start.sh \
+ADD php/74/scripts/pull /usr/bin/pull \
+ADD php/74/scripts/push /usr/bin/push \
+ADD php/74/scripts/letsencrypt-setup /usr/bin/letsencrypt-setup \
+ADD php/74/scripts/letsencrypt-renew /usr/bin/letsencrypt-renew \
+ADD php/74/src/ /var/www/html/ \
+ADD php/74/errors/ /var/www/errors
 
 # Configure file
 RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf \
