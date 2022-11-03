@@ -17,7 +17,7 @@ jobs:
           sudo service docker restart
           docker version -f '{{.Client.Experimental}}'
           docker version -f '{{.Server.Experimental}}'
-          docker buildx version 
+          docker buildx version
       - name: Setup docker-slim
         run: curl -sL https://raw.githubusercontent.com/docker-slim/docker-slim/master/scripts/install-dockerslim.sh | sudo -E bash -
       - name: Checkout
@@ -33,9 +33,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build Docker
         run : |
-          docker build -f php/74/Dockerfile -t jpratama7/php-fpm-nginx:latest .
+          docker build --squash -f php/74/Dockerfile -t jpratama7/php-fpm-nginx:latest .
           docker push jpratama7/php-fpm-nginx:latest
-          docker build -f php/74/Dockerfile -t jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }} .
+          docker build --squash -f php/74/Dockerfile -t jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }} .
           docker push jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}
       - name: Build Docker Slim
         run: |
