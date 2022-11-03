@@ -2,19 +2,19 @@ FROM php:7.4-fpm-alpine
 
 LABEL maintainer="JPratama7 <josepratama080@gmail.com>"
 
-ENV php_conf /usr/local/etc/php-fpm.conf \
-    fpm_conf /usr/local/etc/php-fpm.d/www.conf \
-    php_vars /usr/local/etc/php/conf.d/docker-vars.ini \
-    NGINX_VERSION 1.22.1 \
-    LUA_MODULE_VERSION 0.10.19 \
-    DEVEL_KIT_MODULE_VERSION 0.3.1 \
+ENV php_conf=/usr/local/etc/php-fpm.conf \
+    fpm_conf=/usr/local/etc/php-fpm.d/www.conf \
+    php_vars=/usr/local/etc/php/conf.d/docker-vars.ini \
+    NGINX_VERSION=1.22.1 \
+    LUA_MODULE_VERSION=0.10.19 \
+    DEVEL_KIT_MODULE_VERSION=0.3.1 \
     VERSION_ZLIB=zlib-1.2.11 \
     VERSION_PCRE=pcre-8.41 \
     VERSION_OPENSSL=openssl-1.1.1s \
     LUAJIT_LIB=/usr/lib \
     LUAJIT_INC=/usr/include/luajit-2.1 \
     # resolves #166
-    LD_PRELOAD /usr/lib/preloadable_libiconv.so php
+    LD_PRELOAD=/usr/lib/preloadable_libiconv.so php
 
 RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv \ 
   && GPG_KEYS=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
