@@ -37,11 +37,3 @@ jobs:
           docker push jpratama7/php-fpm-nginx:latest
           docker build --squash -f php/74/Dockerfile -t jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }} .
           docker push jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}
-      - name: Build Docker Slim
-        run: |
-          docker pull jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}
-          docker pull jpratama7/php-fpm-nginx:latest
-          docker-slim build --include-shell --include-path /bin/ --include-path /usr/ --http-probe-off --target jpratama7/php-fpm-nginx:latest --tag jpratama7/php-fpm-nginx:latest-slim
-          docker push jpratama7/php-fpm-nginx:latest-slim
-          docker-slim build --include-shell --include-path /bin/ --include-path /usr/ --http-probe-off --target jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }} --tag jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}-slim
-          docker push jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}-slim

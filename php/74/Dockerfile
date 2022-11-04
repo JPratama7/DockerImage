@@ -71,22 +71,22 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && addgroup -S nginx \
   && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \ 
   && apk add --no-cache --virtual .build-deps \
-    autoconf \
-    gcc \
-    libc-dev \
-    make \
-    libressl-dev \
-    pcre-dev \
-    zlib-dev \
-    linux-headers \
-    curl \
-    gnupg \
-    libxslt-dev \
-    gd-dev \
- #   geoip-dev \
-    libmaxminddb-dev \
-    perl-dev \
-    luajit-dev \
+      autoconf \
+      gcc \
+      libc-dev \
+      make \
+      libressl-dev \
+      pcre-dev \
+      zlib-dev \
+      linux-headers \
+      curl \
+      gnupg \
+      libxslt-dev \
+      gd-dev \
+  #   geoip-dev \
+      libmaxminddb-dev \
+      perl-dev \
+      luajit-dev \
   && echo "Downloading......" \
   && curl -fSL http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
   && curl -fSL http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx.tar.gz.asc \
@@ -244,11 +244,12 @@ RUN rm -Rf /etc/nginx/nginx.conf
 ADD php/74/conf/nginx.conf /etc/nginx/nginx.conf
 
 # nginx site conf
-RUN mkdir -p /etc/nginx/sites-available/ && \
-mkdir -p /etc/nginx/sites-enabled/ && \
-mkdir -p /etc/nginx/ssl/ && \
-rm -Rf /var/www/* && \
-mkdir /var/www/html/
+RUN mkdir -p /etc/nginx/sites-available/ \
+    && mkdir -p /etc/nginx/sites-enabled/ \
+    && mkdir -p /etc/nginx/ssl/ \
+    && rm -Rf /var/www/* \
+    && mkdir /var/www/html/
+
 ADD php/74/conf/nginx-site.conf /etc/nginx/sites-available/default.conf
 ADD php/74/conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
 RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
@@ -275,12 +276,14 @@ RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
         -e "s/^;clear_env = no$/clear_env = no/" \
         ${fpm_conf}
 #    ln -s /etc/php7/php.ini /etc/php7/conf.d/php.ini && \
-RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
-	sed -i \
+
+RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini \
+    && sed -i \
 	    -e "s/;opcache/opcache/g" \
 	    -e "s/;zend_extension=opcache/zend_extension=opcache/g" \
             /usr/local/etc/php/php.ini \
-      && rm -rf /usr/src/
+    && rm -rf /usr/src/
+    && rm -rf /var/cache/apk/*
 
 
 # Add Scripts
