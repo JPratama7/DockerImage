@@ -284,7 +284,7 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini \
 	    -e "s/;opcache/opcache/g" \
 	    -e "s/;zend_extension=opcache/zend_extension=opcache/g" \
             /usr/local/etc/php/php.ini \
-    && rm -rf /usr/src/
+    && rm -rf /usr/src/ \
     && rm -rf /var/cache/apk/*
 
 
