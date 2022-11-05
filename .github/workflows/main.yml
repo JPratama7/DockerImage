@@ -10,7 +10,7 @@ jobs:
         id: date
         run: echo "::set-output name=date::$(date +'%Y%m%d')"
       - name: Setup Python
-      - uses: actions/setup-python@v4
+        uses: actions/setup-python@v4
         with:
           python-version: '3.8'
           cache: 'pip'
