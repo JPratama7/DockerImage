@@ -88,7 +88,7 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
       perl-dev \
       luajit-dev \
   && mkdir -p /usr/src \
-  && cd /usr/src
+  && cd /usr/src \
   && echo "Downloading......" \
   && curl -fSL http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
   && curl -fSL http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx.tar.gz.asc \
