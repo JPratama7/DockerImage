@@ -87,6 +87,8 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
       libmaxminddb-dev \
       perl-dev \
       luajit-dev \
+  && mkdir -p /usr/src \
+  && cd /usr/src
   && echo "Downloading......" \
   && curl -fSL http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
   && curl -fSL http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx.tar.gz.asc \
@@ -108,14 +110,14 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
 #  test -z "$found" && echo >&2 "error: failed to fetch GPG key $GPG_KEYS" && exit 1; \
 #  gpg --batch --verify nginx.tar.gz.asc nginx.tar.gz \
   #&& rm -r "$GNUPGHOME" nginx.tar.gz.asc \
-  && mkdir -p /usr/src \
-  && tar -zxC /usr/src -f nginx.tar.gz \
-  && tar -zxC /usr/src -f ndk.tar.gz \
-  && tar -zxC /usr/src -f lua.tar.gz \
-  && tar -zxC /usr/src -f openssl.tar.gz \
+ 
+  && tar -zxf nginx.tar.gz \
+  && tar -zxf ndk.tar.gz \
+  && tar -zxf lua.tar.gz \
+  && tar -zxf openssl.tar.gz \
 #  && tar -zxC /usr/src -f ngx_http_geoip2_module.tar.gz \
 #  && rm nginx.tar.gz ndk.tar.gz lua.tar.gz ngx_http_geoip2_module.tar.gz \ 
-  && cd /usr/src/nginx-$NGINX_VERSION \
+  && cd nginx-$NGINX_VERSION \
   && ./configure $CONFIG --with-debug \
             --with-cc-opt="-O3 -pipe -Wformat -Werror=format-security -fstack-clash-protection -flto -fcf-protection -fipa-pta -fsched-pressure -mavx -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure" \
             --with-ld-opt="-Wl,-O4,--sort-common,--gc-sections,--as-needed,-z,relro,-z,now" \
