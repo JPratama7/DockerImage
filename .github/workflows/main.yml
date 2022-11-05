@@ -9,6 +9,11 @@ jobs:
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y%m%d')"
+      - name: Setup Python
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+          cache: 'pip'
       - name: Enable experimental features for the Docker daemon and CLI
         run: |
           echo $'{\n  "experimental": true\n}' | sudo tee /etc/docker/daemon.json
@@ -20,6 +25,8 @@ jobs:
           docker buildx version
       - name: Setup docker-slim
         run: curl -sL https://raw.githubusercontent.com/docker-slim/docker-slim/master/scripts/install-dockerslim.sh | sudo -E bash -
+      - name: Setup docker-squash
+        run: pip install docker-squash
       - name: Checkout
         uses: actions/checkout@v3
       - name: Set up QEMU
@@ -33,7 +40,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build Docker
         run : |
-          docker build --squash -f php/74/Dockerfile -t jpratama7/php-fpm-nginx:latest .
+          docker build --squash -f php/74/Dockerfile -t jpratama7/php-fpm-nginx:latest-fat .
+          docker-squash -v -t jpratama7/php-fpm-nginx:latest jpratama7/php-fpm-nginx:latest-fat
           docker push jpratama7/php-fpm-nginx:latest
-          docker build --squash -f php/74/Dockerfile -t jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }} .
+          docker build --squash -f php/74/Dockerfile -t jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}-fat .
+          docker-squash -v -t jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }} jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}-fat
           docker push jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}
