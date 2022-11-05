@@ -25,7 +25,7 @@ jobs:
       - name: Setup docker-slim
         run: curl -sL https://raw.githubusercontent.com/docker-slim/docker-slim/master/scripts/install-dockerslim.sh | sudo -E bash -
       - name: Setup docker-squash
-        run: pip install docker-squash
+        run: pip install --user https://github.com/goldmann/docker-squash/archive/master.zip
       - name: Checkout
         uses: actions/checkout@v3
       - name: Set up QEMU
