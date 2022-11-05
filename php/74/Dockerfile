@@ -9,8 +9,9 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
     LUA_MODULE_VERSION=0.10.19 \
     DEVEL_KIT_MODULE_VERSION=0.3.1 \
     VERSION_ZLIB=zlib-1.2.11 \
-    VERSION_PCRE=pcre-8.41 \
+    VERSION_PCRE=pcre2-10.40 \
     VERSION_OPENSSL=openssl-1.1.1s \
+    VERSION_ZLIB=1.2.13 \
     LUAJIT_LIB=/usr/lib \
     LUAJIT_INC=/usr/include/luajit-2.1
 
@@ -67,6 +68,9 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
     --add-module=/usr/src/ngx_devel_kit-$DEVEL_KIT_MODULE_VERSION \
     --add-module=/usr/src/lua-nginx-module-$LUA_MODULE_VERSION \
     --with-openssl=/usr/src/$VERSION_OPENSSL \
+    --with-zlib=/usr/src/zlib-$VERSION_OPENSSL \
+    --with-pcre=/usr/src/$VERSION_PCRE \
+    --with-pcre-jit
   " \
   && addgroup -S nginx \
   && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \ 
@@ -95,6 +99,8 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && curl -fSL https://github.com/simpl/ngx_devel_kit/archive/v$DEVEL_KIT_MODULE_VERSION.tar.gz -o ndk.tar.gz \
   && curl -fSL https://github.com/openresty/lua-nginx-module/archive/v$LUA_MODULE_VERSION.tar.gz -o lua.tar.gz \
   && curl -fSL https://www.openssl.org/source/$VERSION_OPENSSL.tar.gz -o openssl.tar.gz \
+  && curl -fSL https://github.com/madler/zlib/archive/v$VERSION_ZLIB.tar.gz -o zlib.tar.gz \
+  && curl -fSL https://github.com/PCRE2Project/pcre2/archive/$VERSION_PCRE.tar.gz -o pcre.tar.gz \
 #  && curl -fSL https://github.com/leev/ngx_http_geoip2_module/archive/$GEOIP2_MODULE_VERSION.tar.gz -o ngx_http_geoip2_module.tar.gz \
 #  && export GNUPGHOME="$(mktemp -d)" \
 #  && found=''; \
@@ -115,11 +121,15 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && tar -zxf ndk.tar.gz \
   && tar -zxf lua.tar.gz \
   && tar -zxf openssl.tar.gz \
+  && tar -zxf pcre.tar.gz \
+  && tar -zxf zlib.tar.gz \
 #  && tar -zxC /usr/src -f ngx_http_geoip2_module.tar.gz \
 #  && rm nginx.tar.gz ndk.tar.gz lua.tar.gz ngx_http_geoip2_module.tar.gz \ 
   && cd nginx-$NGINX_VERSION \
   && ./configure $CONFIG --with-debug \
-            --with-cc-opt="-O3 -pipe -Wformat -Werror=format-security -fstack-clash-protection -flto -fcf-protection -fipa-pta -fsched-pressure -mavx -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure" \
+            --with-cc-opt="-pipe -Wformat -Werror=format-security -fstack-clash-protection -flto -fcf-protection -fipa-pta -fsched-pressure -mavx -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure" \
+            --with-pcre-opt="-O3 -pipe -Wformat -Werror=format-security -fstack-clash-protection -flto -fcf-protection -fipa-pta -fsched-pressure -mavx -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure" \
+            --with-openssl-opt="-O3 -pipe -Wformat -Werror=format-security -fstack-clash-protection -flto -fcf-protection -fipa-pta -fsched-pressure -mavx -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure" \
             --with-ld-opt="-Wl,-O4,--sort-common,--gc-sections,--as-needed,-z,relro,-z,now" \
   && make -j$(getconf _NPROCESSORS_ONLN) \
   && mv objs/nginx objs/nginx-debug \
@@ -131,6 +141,8 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && ./configure $CONFIG \
             --with-cc-opt="-O3 -pipe -Wformat -Werror=format-security -fstack-clash-protection -flto -fcf-protection -fipa-pta -fsched-pressure -mavx -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure" \
             --with-ld-opt="-Wl,-O4,--sort-common,--gc-sections,--as-needed,-z,relro,-z,now" \
+            --with-pcre-opt="-O3 -pipe -Wformat -Werror=format-security -fstack-clash-protection -flto -fcf-protection -fipa-pta -fsched-pressure -mavx -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure" \
+            --with-openssl-opt="-O3 -pipe -Wformat -Werror=format-security -fstack-clash-protection -flto -fcf-protection -fipa-pta -fsched-pressure -mavx -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure" \
   && make -j$(getconf _NPROCESSORS_ONLN) \
   && make install \
   && rm -rf /etc/nginx/html/ \
