@@ -79,9 +79,7 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
       gcc \
       libc-dev \
       make \
-      libressl-dev \
-      pcre-dev \
-      zlib-dev \
+      libtool \
       linux-headers \
       curl \
       gnupg \
