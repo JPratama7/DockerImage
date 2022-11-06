@@ -80,6 +80,7 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
       libc-dev \
       make \
       libtool \
+      autoconf \
       linux-headers \
       curl \
       gnupg \
