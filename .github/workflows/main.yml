@@ -39,9 +39,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build Docker
         run : |
-          docker build --squash -f php/74/Dockerfile -t jpratama7/php-fpm-nginx:latest-fat .
-          docker-squash -v -t jpratama7/php-fpm-nginx:latest jpratama7/php-fpm-nginx:latest-fat
+          docker build --squash -f php/74/Dockerfile -t jpratama7/php-fpm-nginx:build-fat .
+          docker-squash -v -t jpratama7/php-fpm-nginx:latest jpratama7/php-fpm-nginx:build-fat
           docker push jpratama7/php-fpm-nginx:latest
-          docker build --squash -f php/74/Dockerfile -t jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}-fat .
-          docker-squash -v -t jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }} jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}-fat
+          docker-squash -v -t jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }} jpratama7/php-fpm-nginx:build-fat
           docker push jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}
