@@ -69,7 +69,7 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
     --add-module=/usr/src/lua-nginx-module-$LUA_MODULE_VERSION \
     --with-openssl=/usr/src/$VERSION_OPENSSL \
     --with-zlib=/usr/src/zlib-$VERSION_OPENSSL \
-    --with-pcre=/usr/src/$VERSION_PCRE \
+    --with-pcre=/usr/src/pcre2-$VERSION_PCRE \
     --with-pcre-jit \
   " \
   && addgroup -S nginx \
