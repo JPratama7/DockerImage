@@ -119,7 +119,7 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && tar -zxf ndk.tar.gz \
   && tar -zxf lua.tar.gz \
   && tar -zxf openssl.tar.gz \
-  && tar -zxf pcre.tar.gz && cd pcre2-$VERSION_PCRE && ./autogen.sh && cd /usr/src \
+  && tar -zxf pcre.tar.gz \
   && tar -zxf zlib.tar.gz \
 #  && tar -zxC /usr/src -f ngx_http_geoip2_module.tar.gz \
 #  && rm nginx.tar.gz ndk.tar.gz lua.tar.gz ngx_http_geoip2_module.tar.gz \ 
