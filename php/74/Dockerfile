@@ -9,7 +9,7 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
     LUA_MODULE_VERSION=0.10.19 \
     DEVEL_KIT_MODULE_VERSION=0.3.1 \
     VERSION_ZLIB=zlib-1.2.11 \
-    VERSION_PCRE=pcre2-10.40 \
+    VERSION_PCRE=pcre-8.45 \
     VERSION_OPENSSL=openssl-1.1.1s \
     VERSION_ZLIB=1.2.13 \
     LUAJIT_LIB=/usr/lib \
@@ -69,7 +69,7 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
     --add-module=/usr/src/lua-nginx-module-$LUA_MODULE_VERSION \
     --with-openssl=/usr/src/$VERSION_OPENSSL \
     --with-zlib=/usr/src/zlib-$VERSION_ZLIB \
-    --with-pcre=/usr/src/pcre2-$VERSION_PCRE \
+    --with-pcre=/usr/src/$VERSION_PCRE \
     --with-pcre-jit \
   " \
   && addgroup -S nginx \
@@ -98,7 +98,7 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && curl -fSL https://github.com/openresty/lua-nginx-module/archive/v$LUA_MODULE_VERSION.tar.gz -o lua.tar.gz \
   && curl -fSL https://www.openssl.org/source/$VERSION_OPENSSL.tar.gz -o openssl.tar.gz \
   && curl -fSL https://github.com/madler/zlib/archive/v$VERSION_ZLIB.tar.gz -o zlib.tar.gz \
-  && curl -fSL https://github.com/PCRE2Project/pcre2/archive/$VERSION_PCRE.tar.gz -o pcre.tar.gz \
+  && curl -fSL https://onboardcloud.dl.sourceforge.net/project/pcre/pcre/8.45/$VERSION_PCRE.tar.gz -o pcre.tar.gz \
 #  && curl -fSL https://github.com/leev/ngx_http_geoip2_module/archive/$GEOIP2_MODULE_VERSION.tar.gz -o ngx_http_geoip2_module.tar.gz \
 #  && export GNUPGHOME="$(mktemp -d)" \
 #  && found=''; \
