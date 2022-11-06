@@ -80,13 +80,12 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
       libc-dev \
       make \
       libtool \
-      autoconf \
+      automake \
       linux-headers \
       curl \
       gnupg \
       libxslt-dev \
       gd-dev \
-  #   geoip-dev \
       libmaxminddb-dev \
       perl-dev \
       luajit-dev \
