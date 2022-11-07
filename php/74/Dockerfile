@@ -76,12 +76,11 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \ 
   && apk add --no-cache --virtual .build-deps \
       autoconf \
-      gcc \
+      g++ \
       libc-dev \
       make \
       libtool \
       automake \
-      pcre-dev \
       linux-headers \
       curl \
       gnupg \
@@ -207,7 +206,7 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     libzip-dev \
     bzip2-dev \
     icu-dev \
-    gcc && \
+    g++ && \
     apk add --no-cache --virtual .sys-deps \
     musl-dev \
     linux-headers \
@@ -246,7 +245,7 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
   #  pip3 install -U pip && \
     pip3 install -U certbot && \
     mkdir -p /etc/letsencrypt/webrootauth && \
-    apk del gcc musl-dev linux-headers libffi-dev augeas-dev python3-dev make autoconf && \
+    apk del g++ musl-dev linux-headers libffi-dev augeas-dev python3-dev make autoconf && \
     apk del .sys-deps
 #    ln -s /usr/bin/php7 /usr/bin/php
 
