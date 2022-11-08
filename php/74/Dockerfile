@@ -12,6 +12,8 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
     VERSION_PCRE=pcre-8.45 \
     VERSION_OPENSSL=openssl-1.1.1s \
     VERSION_ZLIB=1.2.13 \
+    VERSION_LUA_RUSTY_CORE=0.1.24 \
+    VERSION_RUSTY_LRU=0.13 \
     LUAJIT_LIB=/usr/lib \
     LUAJIT_INC=/usr/include/luajit-2.1
 
@@ -67,6 +69,8 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
     --with-http_v2_module \
     --add-module=/usr/src/ngx_devel_kit-$DEVEL_KIT_MODULE_VERSION \
     --add-module=/usr/src/lua-nginx-module-$LUA_MODULE_VERSION \
+    --add-module=/usr/src/lua-resty-core-$VERSION_LUA_RUSTY_CORE \
+    --add-module=/usr/src/lua-resty-lrucache-$VERSION_RUSTY_LRU
     --with-openssl=/usr/src/$VERSION_OPENSSL \
     --with-zlib=/usr/src/zlib-$VERSION_ZLIB \
     --with-pcre=/usr/src/$VERSION_PCRE \
@@ -98,6 +102,8 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && curl -fSL https://github.com/openresty/lua-nginx-module/archive/v$LUA_MODULE_VERSION.tar.gz -o lua.tar.gz \
   && curl -fSL https://www.openssl.org/source/$VERSION_OPENSSL.tar.gz -o openssl.tar.gz \
   && curl -fSL https://github.com/madler/zlib/archive/v$VERSION_ZLIB.tar.gz -o zlib.tar.gz \
+  && curl -fSL https://github.com/openresty/lua-resty-core/archive/v$VERSION_LUA_RUSTY_CORE.tar.gz -o rustycore.tar.gz \
+  && curl -fSL https://github.com/openresty/lua-resty-lrucache/archive/v$VERSION_RUSTY_LRU.tar.gz -o rustylru.tar.gz
   && curl -fSL https://onboardcloud.dl.sourceforge.net/project/pcre/pcre/8.45/$VERSION_PCRE.tar.gz -o pcre.tar.gz \
 #  && curl -fSL https://github.com/leev/ngx_http_geoip2_module/archive/$GEOIP2_MODULE_VERSION.tar.gz -o ngx_http_geoip2_module.tar.gz \
 #  && export GNUPGHOME="$(mktemp -d)" \
@@ -121,6 +127,8 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && tar -zxf openssl.tar.gz \
   && tar -zxf pcre.tar.gz \
   && tar -zxf zlib.tar.gz \
+  && tar -zxf rustycore.tar.gz \
+  && tar -zxf rustylru.tar.gz \
 #  && tar -zxC /usr/src -f ngx_http_geoip2_module.tar.gz \
 #  && rm nginx.tar.gz ndk.tar.gz lua.tar.gz ngx_http_geoip2_module.tar.gz \ 
   && cd nginx-$NGINX_VERSION \
