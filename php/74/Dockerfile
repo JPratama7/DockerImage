@@ -262,7 +262,7 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     pip3 install -U certbot && \
     mkdir -p /etc/letsencrypt/webrootauth && \
     apk del g++ musl-dev linux-headers libffi-dev augeas-dev python3-dev make autoconf && \
-    apk del .sys-deps paxmark
+    apk del .sys-deps
 #    ln -s /usr/bin/php7 /usr/bin/php
 
 ADD php/74/conf/supervisord.conf /etc/supervisord.conf
