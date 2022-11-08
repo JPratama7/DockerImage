@@ -133,7 +133,7 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && tar -zxf rustylru.tar.gz \
   && tar -zxf luajit.tar.gz \
   && cd luajit2-$VERSION_LUAJIT \
-  && CFLAGS=make all && make install \
+  && CFLAGS=$COMPILE_FLAGS make all && make install \
   && cd /usr/src/lua-resty-core-$VERSION_LUA_RUSTY_CORE \
   && LUA_LIB_DIR=$LUA_RESTY_PATH make install \
   && cd /usr/src/lua-resty-lrucache-$VERSION_RUSTY_LRU \
