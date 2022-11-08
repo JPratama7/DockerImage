@@ -70,7 +70,7 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
     --add-module=/usr/src/ngx_devel_kit-$DEVEL_KIT_MODULE_VERSION \
     --add-module=/usr/src/lua-nginx-module-$LUA_MODULE_VERSION \
     --add-module=/usr/src/lua-resty-core-$VERSION_LUA_RUSTY_CORE \
-    --add-module=/usr/src/lua-resty-lrucache-$VERSION_RUSTY_LRU
+    --add-module=/usr/src/lua-resty-lrucache-$VERSION_RUSTY_LRU \
     --with-openssl=/usr/src/$VERSION_OPENSSL \
     --with-zlib=/usr/src/zlib-$VERSION_ZLIB \
     --with-pcre=/usr/src/$VERSION_PCRE \
