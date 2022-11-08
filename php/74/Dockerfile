@@ -92,7 +92,6 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
       gd-dev \
       libmaxminddb-dev \
       perl-dev \
-      paxmark \
   && mkdir -p /usr/src \
   && cd /usr/src \
   && echo "Downloading......" \
