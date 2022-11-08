@@ -16,7 +16,9 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
     VERSION_RUSTY_LRU=0.13 \
     VERSION_LUAJIT=2.1-20220915\
     LUAJIT_LIB=/usr/local/lib \
-    LUAJIT_INC=/usr/local/include/luajit-2.1
+    LUAJIT_INC=/usr/local/include/luajit-2.1 \
+    LUA_RESTY_PATH=/usr/local/share/lua/5.1 \
+    COMPILE_FLAGS="-O3 -pipe -fmodulo-sched -fmodulo-sched-allow-regmoves -flto -fipa-pta -fgcse-lm -fgcse-sm -flive-range-shrinkage -fsched-pressure -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure -ftree-loop-im"
 
 # resolves #166
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
@@ -131,19 +133,19 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && tar -zxf rustylru.tar.gz \
   && tar -zxf luajit.tar.gz \
   && cd luajit2-$VERSION_LUAJIT \
-  && make all && make install \
+  && CFLAGS=make all && make install \
   && cd /usr/src/lua-resty-core-$VERSION_LUA_RUSTY_CORE \
-  && make install --LUA_LIB_DIR=/usr/local/share/lua/5.1 \
+  && LUA_LIB_DIR=$LUA_RESTY_PATH make install \
   && cd /usr/src/lua-resty-lrucache-$VERSION_RUSTY_LRU \
-  && make install --LUA_LIB_DIR=/usr/local/share/lua/5.1 \
+  && LUA_LIB_DIR=$LUA_RESTY_PATH make install \
   && cd /usr/src \
 #  && tar -zxC /usr/src -f ngx_http_geoip2_module.tar.gz \
 #  && rm nginx.tar.gz ndk.tar.gz lua.tar.gz ngx_http_geoip2_module.tar.gz \ 
   && cd nginx-$NGINX_VERSION \
   && ./configure $CONFIG --with-debug \
-            --with-cc-opt="-pipe -flto -fmodulo-sched -fmodulo-sched-allow-regmoves -fipa-pta -fgcse-lm -fgcse-sm -flive-range-shrinkage -fsched-pressure -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure -ftree-loop-im" \
-            --with-pcre-opt="-O3 -pipe -fmodulo-sched -fmodulo-sched-allow-regmoves  -flto -fipa-pta -fgcse-lm -fgcse-sm -flive-range-shrinkage -fsched-pressure -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure -ftree-loop-im" \
-            --with-openssl-opt="-O3 -pipe -fmodulo-sched -fmodulo-sched-allow-regmoves -flto -fipa-pta -fgcse-lm -fgcse-sm -flive-range-shrinkage -fsched-pressure -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure -ftree-loop-im" \
+            --with-cc-opt=${COMPILE_FLAGS/-O3/} \
+            --with-pcre-opt=$COMPILE_FLAGS \
+            --with-openssl-opt=$COMPILE_FLAGS \
             --with-ld-opt="-Wl,-O4,--sort-common,--gc-sections,--as-needed,-z,relro,-z,now" \
   && make -j$(getconf _NPROCESSORS_ONLN) \
   && mv objs/nginx objs/nginx-debug \
@@ -153,10 +155,10 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && mv objs/ngx_http_perl_module.so objs/ngx_http_perl_module-debug.so \
 #  && mv objs/ngx_stream_geoip_module.so objs/ngx_stream_geoip_module-debug.so \
   && ./configure $CONFIG \
-            --with-cc-opt="-O3 -pipe -fmodulo-sched -fmodulo-sched-allow-regmoves -flto -fipa-pta -fgcse-lm -fgcse-sm -flive-range-shrinkage -fsched-pressure -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure -ftree-loop-im" \
+            --with-cc-opt=$COMPILE_FLAGS\
             --with-ld-opt="-Wl,-O4,--sort-common,--gc-sections,--as-needed,-z,relro,-z,now" \
-            --with-pcre-opt="-O3 -pipe -fmodulo-sched -fmodulo-sched-allow-regmoves -flto -fipa-pta -fgcse-lm -fgcse-sm -flive-range-shrinkage -fsched-pressure -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure -ftree-loop-im" \
-            --with-openssl-opt="-O3 -pipe -fmodulo-sched -fmodulo-sched-allow-regmoves -flto -fipa-pta -fgcse-lm -fgcse-sm -flive-range-shrinkage -fsched-pressure -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure -ftree-loop-im" \
+            --with-pcre-opt=$COMPILE_FLAGS\
+            --with-openssl-opt=$COMPILE_FLAGS\
   && make -j$(getconf _NPROCESSORS_ONLN) \
   && make install \
   && rm -rf /etc/nginx/html/ \
