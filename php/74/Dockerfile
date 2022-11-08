@@ -15,8 +15,8 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
     VERSION_LUA_RUSTY_CORE=0.1.24 \
     VERSION_RUSTY_LRU=0.13 \
     VERSION_LUAJIT=2.1-20220915\
-    LUAJIT_LIB=/usr/lib \
-    LUAJIT_INC=/usr/include/luajit-2.1
+    LUAJIT_LIB=/usr/local/lib \
+    LUAJIT_INC=/usr/local/include/luajit-2.1
 
 # resolves #166
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
