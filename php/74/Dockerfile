@@ -14,6 +14,7 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
     VERSION_ZLIB=1.2.13 \
     VERSION_LUA_RUSTY_CORE=0.1.24 \
     VERSION_RUSTY_LRU=0.13 \
+    VERSION_LUAJIT=2.1-20220915\
     LUAJIT_LIB=/usr/lib \
     LUAJIT_INC=/usr/include/luajit-2.1
 
@@ -69,8 +70,7 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
     --with-http_v2_module \
     --add-module=/usr/src/ngx_devel_kit-$DEVEL_KIT_MODULE_VERSION \
     --add-module=/usr/src/lua-nginx-module-$LUA_MODULE_VERSION \
-    --add-module=/usr/src/lua-resty-core-$VERSION_LUA_RUSTY_CORE \
-    --add-module=/usr/src/lua-resty-lrucache-$VERSION_RUSTY_LRU \
+    --add-module= \
     --with-openssl=/usr/src/$VERSION_OPENSSL \
     --with-zlib=/usr/src/zlib-$VERSION_ZLIB \
     --with-pcre=/usr/src/$VERSION_PCRE \
@@ -92,7 +92,7 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
       gd-dev \
       libmaxminddb-dev \
       perl-dev \
-      luajit-dev \
+      paxmark \
   && mkdir -p /usr/src \
   && cd /usr/src \
   && echo "Downloading......" \
@@ -105,6 +105,7 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && curl -fSL https://github.com/openresty/lua-resty-core/archive/v$VERSION_LUA_RUSTY_CORE.tar.gz -o rustycore.tar.gz \
   && curl -fSL https://github.com/openresty/lua-resty-lrucache/archive/v$VERSION_RUSTY_LRU.tar.gz -o rustylru.tar.gz \
   && curl -fSL https://onboardcloud.dl.sourceforge.net/project/pcre/pcre/8.45/$VERSION_PCRE.tar.gz -o pcre.tar.gz \
+  && curl -fSL https://github.com/openresty/luajit2/archive/v$VERSION_LUAJIT.tar.gz -o luajit.tar.gz \
 #  && curl -fSL https://github.com/leev/ngx_http_geoip2_module/archive/$GEOIP2_MODULE_VERSION.tar.gz -o ngx_http_geoip2_module.tar.gz \
 #  && export GNUPGHOME="$(mktemp -d)" \
 #  && found=''; \
@@ -129,6 +130,14 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && tar -zxf zlib.tar.gz \
   && tar -zxf rustycore.tar.gz \
   && tar -zxf rustylru.tar.gz \
+  && tar -zxf luajit.tar.gz \
+  && cd luajit2-$VERSION_LUAJIT \
+  && make all && make install \
+  && cd /usr/src/lua-resty-core-$VERSION_LUA_RUSTY_CORE \
+  && make all && make install \
+  && cd /usr/src/lua-resty-lrucache-$VERSION_RUSTY_LRU \
+  && make all && make install \
+  && cd /usr/src \
 #  && tar -zxC /usr/src -f ngx_http_geoip2_module.tar.gz \
 #  && rm nginx.tar.gz ndk.tar.gz lua.tar.gz ngx_http_geoip2_module.tar.gz \ 
   && cd nginx-$NGINX_VERSION \
@@ -254,7 +263,7 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     pip3 install -U certbot && \
     mkdir -p /etc/letsencrypt/webrootauth && \
     apk del g++ musl-dev linux-headers libffi-dev augeas-dev python3-dev make autoconf && \
-    apk del .sys-deps
+    apk del .sys-deps paxmark
 #    ln -s /usr/bin/php7 /usr/bin/php
 
 ADD php/74/conf/supervisord.conf /etc/supervisord.conf
