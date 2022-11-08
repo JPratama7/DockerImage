@@ -133,9 +133,9 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && cd luajit2-$VERSION_LUAJIT \
   && make all && make install \
   && cd /usr/src/lua-resty-core-$VERSION_LUA_RUSTY_CORE \
-  && make all && make install \
+  && make install --LUA_LIB_DIR=/usr/local/share/lua/5.1 \
   && cd /usr/src/lua-resty-lrucache-$VERSION_RUSTY_LRU \
-  && make all && make install \
+  && make install --LUA_LIB_DIR=/usr/local/share/lua/5.1 \
   && cd /usr/src \
 #  && tar -zxC /usr/src -f ngx_http_geoip2_module.tar.gz \
 #  && rm nginx.tar.gz ndk.tar.gz lua.tar.gz ngx_http_geoip2_module.tar.gz \ 
