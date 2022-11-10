@@ -55,7 +55,7 @@ jobs:
     strategy:
       matrix:
         build: [
-          3.10
+          "3.10"
           ]
       fail-fast: false
     runs-on: ubuntu-latest
