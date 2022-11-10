@@ -93,8 +93,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build Docker
         run : |
-          docker build --squash -f python/${{ matrix.build }}/Dockerfile -t jpratama7/bullseye-3.10:build-fat .
-          docker-squash -v -t jpratama7/bullseye-3.10:latest jpratama7/bullseye-3.10:build-fat
-          docker push jpratama7/bullseye-3.10:latest
-          docker-squash -v -t jpratama7/bullseye-3.10:${{ steps.date.outputs.date }} jpratama7/bullseye-3.10:build-fat
-          docker push jpratama7/bullseye-3.10:${{ steps.date.outputs.date }}
+          docker build --squash -f python/${{ matrix.build }}/Dockerfile -t jpratama7/bullseye-python:build-fat .
+          docker-squash -v -t jpratama7/bullseye-python:latest jpratama7/bullseye-python:build-fat
+          docker push jpratama7/bullseye-python:latest
+          docker-squash -v -t jpratama7/bullseye-python:${{ steps.date.outputs.date }} jpratama7/bullseye-python:build-fat
+          docker push jpratama7/bullseye-python:${{ steps.date.outputs.date }}
