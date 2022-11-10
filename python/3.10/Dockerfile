@@ -15,7 +15,8 @@ ENV LANG C.UTF-8
 
 
 # CFLAGS
-ENV CFLAGS="-pipe -fmodulo-sched -fmodulo-sched-allow-regmoves -fipa-pta -fgcse-lm -fgcse-sm -flive-range-shrinkage -fsched-pressure -fuse-linker-plugin -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure -ftree-loop-im"
+ENV CFLAGS="-pipe -fmodulo-sched -fmodulo-sched-allow-regmoves -fipa-pta -fgcse-lm -fgcse-sm -flive-range-shrinkage -fsched-pressure -fuse-linker-plugin -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure -ftree-loop-im" \
+    LDFLAGS="-Wl,-O4,--sort-common,--gc-sections,--as-needed,-z,relro,-z,now"
 
 # runtime dependencies
 RUN set -eux; \
@@ -57,9 +58,8 @@ RUN set -eux; \
 		--without-ensurepip \
 	; \
 	nproc="$(nproc)"; \
-	make -j "$nproc" EXTRA_CFLAGS="$CFLAGS" \
-	; \
-	make install EXTRA_CFLAGS="$CFLAGS"; \
+	make -j "$nproc" EXTRA_CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS"; \
+	make install EXTRA_CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS"; \
 	\
 # enable GDB to load debugging data: https://github.com/docker-library/python/pull/701
 	bin="$(readlink -ve /usr/local/bin/python3)"; \
