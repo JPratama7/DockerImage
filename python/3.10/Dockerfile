@@ -53,9 +53,7 @@ RUN set -eux; \
 		--enable-option-checking=fatal \
 		--enable-shared \
 		--with-lto \
-        --enable-ipv6 \
 		--with-system-expat \
-        --with-lto=yes \
 		--without-ensurepip \
 	; \
 	nproc="$(nproc)"; \
