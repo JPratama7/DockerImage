@@ -107,7 +107,7 @@ RUN set -eux; \
 	; \
 	rm -f get-pip.py; \
 	\
-	pip --version \
+	pip --version; \
     pip install nuitka
 
 CMD ["python3"]
