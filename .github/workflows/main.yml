@@ -95,6 +95,6 @@ jobs:
         run : |
           docker build --squash -f python/${{ matrix.build }}/Dockerfile -t jpratama7/bullseye-python:build-fat-${{ matrix.build }} .
           docker-squash -v -t jpratama7/bullseye-python:latest-${{ matrix.build }} jpratama7/bullseye-python:build-fat-${{ matrix.build }}
-          docker push jpratama7/bullseye-python:latest-${{ matrix.build }}
-          docker-squash -v -t jpratama7/bullseye-python:${{ matrix.build }} jpratama7/bullseye-python:build-fat-${{ matrix.build }}
+          docker-squash -v -t jpratama7/bullseye-python:${{ steps.date.outputs.date }}-${{ matrix.build }} jpratama7/bullseye-python:build-fat-${{ matrix.build }}
           docker push jpratama7/bullseye-python:${{ steps.date.outputs.date }}-${{ matrix.build }}
+          docker push jpratama7/bullseye-python:latest-${{ matrix.build }}
