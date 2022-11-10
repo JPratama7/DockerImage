@@ -66,7 +66,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: ${{ matrix.build }}
       - name: Enable experimental features for the Docker daemon and CLI
         run: |
           echo $'{\n  "experimental": true\n}' | sudo tee /etc/docker/daemon.json
@@ -93,8 +93,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build Docker
         run : |
-          docker build --squash -f python/${{ matrix.build }}/Dockerfile -t jpratama7/bullseye-python:build-fat .
-          docker-squash -v -t jpratama7/bullseye-python:latest jpratama7/bullseye-python:build-fat
-          docker push jpratama7/bullseye-python:latest
-          docker-squash -v -t jpratama7/bullseye-python:${{ steps.date.outputs.date }} jpratama7/bullseye-python:build-fat
-          docker push jpratama7/bullseye-python:${{ steps.date.outputs.date }}
+          docker build --squash -f python/${{ matrix.build }}/Dockerfile -t jpratama7/bullseye-python:build-fat-${{ matrix.build }} .
+          docker-squash -v -t jpratama7/bullseye-python:latest-${{ matrix.build }} jpratama7/bullseye-python:build-fat-${{ matrix.build }}
+          docker push jpratama7/bullseye-python:latest-${{ matrix.build }}
+          docker-squash -v -t jpratama7/bullseye-python:${{ matrix.build }} jpratama7/bullseye-python:build-fat-${{ matrix.build }}
+          docker push jpratama7/bullseye-python:${{ steps.date.outputs.date }}-${{ matrix.build }}
