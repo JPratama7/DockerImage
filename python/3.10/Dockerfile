@@ -55,7 +55,7 @@ RUN set -eux; \
 		--with-lto \
         --enable-ipv6 \
 		--with-system-expat \
-        --with-lto=yes
+        --with-lto=yes \
 		--without-ensurepip \
 	; \
 	nproc="$(nproc)"; \
