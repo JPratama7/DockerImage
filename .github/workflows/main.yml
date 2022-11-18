@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         build: [
-          74
+          74, 81
           ]
       fail-fast: false
     runs-on: ubuntu-latest
@@ -45,7 +45,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build Docker
         run : |
-          docker build --squash -f php/${{ matrix.build }}/Dockerfile -t jpratama7/php-fpm-nginx:build-fat .
+          docker build -f php/${{ matrix.build }}/Dockerfile -t jpratama7/php-fpm-nginx:build-fat .
           docker-squash -v -t jpratama7/php-fpm-nginx:latest jpratama7/php-fpm-nginx:build-fat
           docker push jpratama7/php-fpm-nginx:latest
           docker-squash -v -t jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }} jpratama7/php-fpm-nginx:build-fat
@@ -93,7 +93,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build Docker
         run : |
-          docker build --squash -f python/${{ matrix.build }}/Dockerfile -t jpratama7/bullseye-python:build-fat-${{ matrix.build }} .
+          docker build -f python/${{ matrix.build }}/Dockerfile -t jpratama7/bullseye-python:build-fat-${{ matrix.build }} .
           docker-squash -v -t jpratama7/bullseye-python:latest-${{ matrix.build }} jpratama7/bullseye-python:build-fat-${{ matrix.build }}
           docker-squash -v -t jpratama7/bullseye-python:${{ steps.date.outputs.date }}-${{ matrix.build }} jpratama7/bullseye-python:build-fat-${{ matrix.build }}
           docker push jpratama7/bullseye-python:${{ steps.date.outputs.date }}-${{ matrix.build }}
