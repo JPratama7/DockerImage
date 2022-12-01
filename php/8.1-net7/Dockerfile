@@ -26,7 +26,7 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
 # resolves #166
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
-RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv \ 
+RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv aspnetcore7-runtime \ 
   && GPG_KEYS=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
   && CONFIG="\
     --prefix=/etc/nginx \
@@ -84,7 +84,6 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && addgroup -S nginx \
   && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \ 
   && apk add --no-cache --virtual .build-deps \
-      aspnetcore7-runtime \
       autoconf \
       g++ \
       libc-dev \
