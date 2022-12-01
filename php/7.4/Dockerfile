@@ -272,11 +272,11 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     apk del .sys-deps
 #    ln -s /usr/bin/php7 /usr/bin/php
 
-ADD php/74/conf/supervisord.conf /etc/supervisord.conf
+ADD php/7.4/conf/supervisord.conf /etc/supervisord.conf
 
 # Copy our nginx config
 RUN rm -Rf /etc/nginx/nginx.conf
-ADD php/74/conf/nginx.conf /etc/nginx/nginx.conf
+ADD php/7.4/conf/nginx.conf /etc/nginx/nginx.conf
 
 # nginx site conf
 RUN mkdir -p /etc/nginx/sites-available/ \
@@ -285,8 +285,8 @@ RUN mkdir -p /etc/nginx/sites-available/ \
     && rm -Rf /var/www/* \
     && mkdir /var/www/html/
 
-ADD php/74/conf/nginx-site.conf /etc/nginx/sites-available/default.conf
-ADD php/74/conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
+ADD php/7.4/conf/nginx-site.conf /etc/nginx/sites-available/default.conf
+ADD php/7.4/conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
 RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
 
 # tweak php-fpm config
@@ -322,16 +322,16 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini \
 
 
 # Add Scripts
-ADD php/74/scripts/start.sh /start.sh
-ADD php/74/scripts/pull /usr/bin/pull
-ADD php/74/scripts/push /usr/bin/push
-ADD php/74/scripts/letsencrypt-setup /usr/bin/letsencrypt-setup
-ADD php/74/scripts/letsencrypt-renew /usr/bin/letsencrypt-renew
+ADD php/7.4/scripts/start.sh /start.sh
+ADD php/7.4/scripts/pull /usr/bin/pull
+ADD php/7.4/scripts/push /usr/bin/push
+ADD php/7.4/scripts/letsencrypt-setup /usr/bin/letsencrypt-setup
+ADD php/7.4/scripts/letsencrypt-renew /usr/bin/letsencrypt-renew
 RUN chmod 755 /usr/bin/pull && chmod 755 /usr/bin/push && chmod 755 /usr/bin/letsencrypt-setup && chmod 755 /usr/bin/letsencrypt-renew && chmod 755 /start.sh
 
 # copy in code
-ADD php/74/src/ /var/www/html/
-ADD php/74/errors/ /var/www/errors
+ADD php/7.4/src/ /var/www/html/
+ADD php/7.4/errors/ /var/www/errors
 
 
 EXPOSE 443 80
