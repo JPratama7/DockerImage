@@ -13,7 +13,7 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
     DEVEL_KIT_MODULE_VERSION=0.3.1 \
     VERSION_ZLIB=zlib-1.2.11 \
     VERSION_PCRE=pcre-8.45 \
-    VERSION_OPENSSL=openssl-1.1.1s \
+    VERSION_OPENSSL=openssl-3.0.7 \
     VERSION_ZLIB=1.2.13 \
     VERSION_LUA_RUSTY_CORE=0.1.24 \
     VERSION_RUSTY_LRU=0.13 \
@@ -26,7 +26,7 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
 # resolves #166
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
-RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv aspnetcore7-runtime \ 
+RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv \ 
   && GPG_KEYS=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
   && CONFIG="\
     --prefix=/etc/nginx \
@@ -283,6 +283,10 @@ RUN mkdir -p /etc/nginx/sites-available/ \
     && mkdir -p /etc/nginx/ssl/ \
     && rm -Rf /var/www/* \
     && mkdir /var/www/html/
+
+# Add ASP.NET 7
+RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community aspnetcore7-runtime \ 
+
 
 ADD php/74/conf/nginx-site.conf /etc/nginx/sites-available/default.conf
 ADD php/74/conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
