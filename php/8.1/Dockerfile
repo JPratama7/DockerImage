@@ -1,6 +1,9 @@
-FROM php:7.4-fpm-alpine
+FROM php:8.1-fpm-alpine3.16
 
 LABEL maintainer="JPratama7 <josepratama080@gmail.com>"
+
+
+COPY --from=mlocati/php-extension-installer:latest /usr/bin/install-php-extensions /usr/local/bin/
 
 ENV php_conf=/usr/local/etc/php-fpm.conf \
     fpm_conf=/usr/local/etc/php-fpm.d/www.conf \

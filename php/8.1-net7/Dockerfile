@@ -2,6 +2,9 @@ FROM php:8.1-fpm-alpine3.16
 
 LABEL maintainer="JPratama7 <josepratama080@gmail.com>"
 
+COPY --from=mlocati/php-extension-installer:latest /usr/bin/install-php-extensions /usr/local/bin/
+
+
 ENV php_conf=/usr/local/etc/php-fpm.conf \
     fpm_conf=/usr/local/etc/php-fpm.d/www.conf \
     php_vars=/usr/local/etc/php/conf.d/docker-vars.ini \
@@ -81,6 +84,7 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && addgroup -S nginx \
   && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \ 
   && apk add --no-cache --virtual .build-deps \
+      aspnetcore7-runtime \
       autoconf \
       g++ \
       libc-dev \

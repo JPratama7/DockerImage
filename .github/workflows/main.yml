@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         build: [
-          74, 81
+          "7.4", "8.1", "8.1-net7"
           ]
       fail-fast: false
     runs-on: ubuntu-latest
@@ -47,9 +47,9 @@ jobs:
         run : |
           docker build -f php/${{ matrix.build }}/Dockerfile -t jpratama7/php-fpm-nginx:build-fat .
           docker-squash -v -t jpratama7/php-fpm-nginx:latest jpratama7/php-fpm-nginx:build-fat
-          docker push jpratama7/php-fpm-nginx:latest
-          docker-squash -v -t jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }} jpratama7/php-fpm-nginx:build-fat
-          docker push jpratama7/php-fpm-nginx:${{ steps.date.outputs.date }}
+          docker push jpratama7/php-fpm-nginx:${{ matrix.build }}-latest
+          docker-squash -v -t jpratama7/php-fpm-nginx:${{ matrix.build }} jpratama7/php-fpm-nginx:build-fat
+          docker push jpratama7/php-fpm-nginx:${{ matrix.build }}
 
   Python:
     strategy:
