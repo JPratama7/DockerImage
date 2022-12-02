@@ -27,8 +27,12 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
 # Add ASP.NET 7
-RUN apk add  --no-cache libcrypto3 libssl3 \
-    && apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community aspnetcore7-runtime
+#RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories \ 
+#    && echo http://dl-cdn.alpinelinux.org/alpine/edge/main >> /etc/apk/repositories \
+#    && apk update \
+#    && apk add dotnet7-runtime libcrypto3 libssl3 \
+#    && apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community -X http://dl-cdn.alpinelinux.org/alpine/edge/main aspnetcore7-runtime
+RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community --repository http://dl-cdn.alpinelinux.org/alpine/edge/main aspnetcore7-runtime
 
 RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv \ 
   && GPG_KEYS=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
