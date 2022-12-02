@@ -285,7 +285,7 @@ RUN mkdir -p /etc/nginx/sites-available/ \
     && mkdir /var/www/html/
 
 # Add ASP.NET 7
-RUN apk add --no-cache --force-broken-world --repository http://dl-3.alpinelinux.org/alpine/edge/community aspnetcore7-runtime \ 
+RUN apk add --no-cache --force-broken-world --repository http://dl-3.alpinelinux.org/alpine/edge/community aspnetcore7-runtime
 
 
 ADD php/8.1-net7/conf/nginx-site.conf /etc/nginx/sites-available/default.conf
