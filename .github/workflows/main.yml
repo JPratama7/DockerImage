@@ -46,7 +46,7 @@ jobs:
       - name: Build Docker
         run : |
           docker build -f php/${{ matrix.build }}/Dockerfile -t jpratama7/php-fpm-nginx:build-fat .
-          docker-squash -v -t jpratama7/php-fpm-nginx:latest jpratama7/php-fpm-nginx:build-fat
+          docker-squash -v -t jpratama7/php-fpm-nginx:${{ matrix.build }}-latest jpratama7/php-fpm-nginx:build-fat
           docker push jpratama7/php-fpm-nginx:${{ matrix.build }}-latest
           docker-squash -v -t jpratama7/php-fpm-nginx:${{ matrix.build }} jpratama7/php-fpm-nginx:build-fat
           docker push jpratama7/php-fpm-nginx:${{ matrix.build }}
