@@ -285,6 +285,7 @@ RUN mkdir -p /etc/nginx/sites-available/ \
     && mkdir /var/www/html/
 
 # Add ASP.NET 7
+RUN apk add libssl3 libcrypto3
 RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community aspnetcore7-runtime \ 
 
 
