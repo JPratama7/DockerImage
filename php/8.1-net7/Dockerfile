@@ -26,6 +26,10 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
 # resolves #166
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
+# Add ASP.NET 7
+RUN apk add  --no-cache libcrypto3 libssl3 \
+    && apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community aspnetcore7-runtime
+
 RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv \ 
   && GPG_KEYS=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
   && CONFIG="\
@@ -283,9 +287,6 @@ RUN mkdir -p /etc/nginx/sites-available/ \
     && mkdir -p /etc/nginx/ssl/ \
     && rm -Rf /var/www/* \
     && mkdir /var/www/html/
-
-# Add ASP.NET 7
-RUN apk add --no-cache --force-broken-world --repository http://dl-3.alpinelinux.org/alpine/edge/community aspnetcore7-runtime
 
 
 ADD php/8.1-net7/conf/nginx-site.conf /etc/nginx/sites-available/default.conf
