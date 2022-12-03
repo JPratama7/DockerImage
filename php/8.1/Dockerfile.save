@@ -316,8 +316,8 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini \
 	    -e "s/;opcache/opcache/g" \
 	    -e "s/;zend_extension=opcache/zend_extension=opcache/g" \
             /usr/local/etc/php/php.ini \
-#    && find /usr/src -type f -not \( -name 'php.tar.xz' \) -delete \
-    && cd /usr/src && rm -r `ls | grep -v "php.tar.xz"` \
+    && find /usr/src -type f -not \( -name 'php.tar.xz' \) -delete \
+    && rm -r `ls | grep -v "textfile.txt\|backup.tar.gz\|script.php\|database.sql\|info.txt"` \
  #   && cd /usr/src && shopt -s extglob && rm !(php.tar.xz) && cd / \
     && rm -rf /var/cache/apk/*
 
