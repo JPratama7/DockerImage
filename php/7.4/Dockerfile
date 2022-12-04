@@ -317,7 +317,7 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini \
 	    -e "s/;opcache/opcache/g" \
 	    -e "s/;zend_extension=opcache/zend_extension=opcache/g" \
             /usr/local/etc/php/php.ini \
-    && cd /usr/src && rm -r `ls | grep -v "php.tar.xz" \
+    && cd /usr/src && rm -r `ls | grep -v "php.tar.xz"` \
     && rm -rf /var/cache/apk/*
 
 

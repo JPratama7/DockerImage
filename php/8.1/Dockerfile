@@ -1,4 +1,4 @@
-FROM php:8.1-fpm-alpine3.16
+FROM php:8.1-fpm-alpine
 
 LABEL maintainer="JPratama7 <josepratama080@gmail.com>"
 
@@ -25,6 +25,46 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
 
 # resolves #166
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
+
+
+RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
+    echo /etc/apk/respositories && \
+    apk update && apk upgrade &&\
+    apk add --no-cache \
+    bash \
+    openssh-client \
+    wget \
+    supervisor \
+    curl \
+    libcurl \
+    libpq \
+    git \
+    python3 \
+    py3-pip \
+    ca-certificates \
+    dialog \
+    autoconf \
+    make \
+    openssl-dev \
+    libretls-dev \
+    libzip-dev \
+    bzip2-dev \
+    icu-dev \
+    g++ && \
+    apk add --no-cache --virtual .sys-deps \
+    musl-dev \
+    linux-headers \
+    augeas-dev \
+    libmcrypt-dev \
+    libpng-dev \
+    libxslt-dev \
+    python3-dev \
+    libffi-dev \
+    freetype-dev \
+    sqlite-dev \
+    imap-dev \
+    libjpeg-turbo-dev \
+    postgresql-dev && \
 
 RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv \ 
   && GPG_KEYS=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
@@ -84,20 +124,13 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && addgroup -S nginx \
   && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \ 
   && apk add --no-cache --virtual .build-deps \
-      autoconf \
-      g++ \
       libc-dev \
-      make \
       libtool \
       automake \
-      linux-headers \
-      curl \
-      gnupg \
       libxslt-dev \
       gd-dev \
       libmaxminddb-dev \
       perl-dev \
-      xclip \
   && mkdir -p /usr/src \
   && cd /usr/src \
   && echo "Downloading......" \
@@ -205,45 +238,7 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   && ln -sf /dev/stdout /var/log/nginx/access.log \
   && ln -sf /dev/stderr /var/log/nginx/error.log
 
-RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
-    echo /etc/apk/respositories && \
-    apk update && apk upgrade &&\
-    apk add --no-cache \
-    bash \
-    openssh-client \
-    wget \
-    supervisor \
-    curl \
-    libcurl \
-    libpq \
-    git \
-    python3 \
-    py3-pip \
-    ca-certificates \
-    dialog \
-    autoconf \
-    make \
-    openssl-dev \
-    libressl-dev \
-    libzip-dev \
-    bzip2-dev \
-    icu-dev \
-    g++ && \
-    apk add --no-cache --virtual .sys-deps \
-    musl-dev \
-    linux-headers \
-    augeas-dev \
-    libmcrypt-dev \
-    libpng-dev \
-    libxslt-dev \
-    python3-dev \
-    libffi-dev \
-    freetype-dev \
-    sqlite-dev \
-    imap-dev \
-    libjpeg-turbo-dev \
-    postgresql-dev && \
-    docker-php-ext-configure gd \
+RUN docker-php-ext-configure gd \
       --enable-gd \
       --with-freetype \
       --with-jpeg && \
