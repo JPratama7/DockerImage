@@ -18,10 +18,6 @@ if [ ! -z "$SSH_KEY" ]; then
 fi
 
 
-if [ ! -z "$EXTENSION" ]; then
-  install-php-ext "$EXTENSION"
-fi
-
 # Set custom webroot
 if [ ! -z "$WEBROOT" ]; then
  sed -i "s#root /var/www/html;#root ${WEBROOT};#g" /etc/nginx/sites-available/default.conf
