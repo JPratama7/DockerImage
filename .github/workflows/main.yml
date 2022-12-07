@@ -36,14 +36,14 @@ jobs:
         run: |
           mkdir /tmp/dockerslim
           pushd /tmp/dockerslim
-          local DIST=""
-          local EXT=""
-          local FILENAME=""
-          local KERNEL=""
-          local MACHINE=""
-          local TMP_DIR=""
-          local URL=""
-          local VER=""
+          DIST=""
+          EXT=""
+          FILENAME=""
+          KERNEL=""
+          MACHINE=""
+          TMP_DIR=""
+          URL=""
+          VER=""
 
           # Get the current released tag_name
           VER=$(curl -sL https://api.github.com/repos/docker-slim/docker-slim/releases \
