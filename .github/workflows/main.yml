@@ -34,6 +34,7 @@ jobs:
         run: curl -sL https://raw.githubusercontent.com/docker-slim/docker-slim/master/scripts/install-dockerslim.sh | sudo -E bash -
       - name: Setup docker-squash
         run: |
+          mkdir /tmp/dockerslim
           pushd /tmp/dockerslim
           local DIST=""
           local EXT=""
