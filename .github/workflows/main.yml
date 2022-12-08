@@ -20,7 +20,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10
+          python-version: "3.10.9"
       - name: Enable experimental features for the Docker daemon and CLI
         run: |
           echo $'{\n  "experimental": true\n}' | sudo tee /etc/docker/daemon.json
