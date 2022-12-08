@@ -317,7 +317,7 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini \
 	    -e "s/;zend_extension=opcache/zend_extension=opcache/g" \
             /usr/local/etc/php/php.ini \
 #    && find /usr/src -type f -not \( -name 'php.tar.xz' \) -delete \
-    && cd /usr/src && rm -r `ls -al --ignore="openssl*" --ignore="php*"` \
+    && cd /usr/src && rm -r `ls | grep -Ev 'php|openssl'` \
  #   && cd /usr/src && shopt -s extglob && rm !(php.tar.xz) && cd / \
     && rm -rf /var/cache/apk/*
 
