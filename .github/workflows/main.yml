@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         build: [
-          "7.4", "8.1", "8.1-net7"
+          "7.4", "8.1"
           ]
       fail-fast: false
     runs-on: ubuntu-latest

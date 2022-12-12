@@ -224,7 +224,7 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     autoconf \
     make \
     openssl-dev \
-    libressl-dev \
+    libretls-dev \
     libzip-dev \
     bzip2-dev \
     icu-dev \
@@ -318,7 +318,7 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini \
             /usr/local/etc/php/php.ini \
 #    && find /usr/src -type f -not \( -name 'php.tar.xz' \) -delete \
     && cd /usr/src && rm -r `ls | grep -Ev 'php|openssl'` \
- #   && cd /usr/src && shopt -s extglob && rm !(php.tar.xz) && cd / \
+    && cd `cd `ls -d */ | grep openssl` && rm -r * \
     && rm -rf /var/cache/apk/*
 
 
