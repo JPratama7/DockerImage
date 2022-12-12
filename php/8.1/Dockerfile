@@ -318,7 +318,7 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini \
             /usr/local/etc/php/php.ini \
 #    && find /usr/src -type f -not \( -name 'php.tar.xz' \) -delete \
     && cd /usr/src && rm -r `ls | grep -Ev 'php|openssl'` \
-    && cd `cd `ls -d */ | grep openssl` && rm -r * \
+    && cd `ls -d */ | grep openssl` && rm -r * \
     && rm -rf /var/cache/apk/*
 
 
