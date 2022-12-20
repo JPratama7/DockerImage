@@ -17,6 +17,7 @@ if [ ! -z "$SSH_KEY" ]; then
  chmod 600 /root/.ssh/id_rsa
 fi
 
+
 # Set custom webroot
 if [ ! -z "$WEBROOT" ]; then
  sed -i "s#root /var/www/html;#root ${WEBROOT};#g" /etc/nginx/sites-available/default.conf
@@ -29,6 +30,10 @@ if [ ! -z "$PHP_CATCHALL" ]; then
  sed -i 's#try_files $uri $uri/ =404;#try_files $uri $uri/ /index.php?$args;#g' /etc/nginx/sites-available/default.conf
 fi
 
+# Disable opcache
+if [ ! -z "$OPcache" ]; then
+ sed -i 's#zend_extension=opcache#;zend_extension=opcache#g' /usr/local/etc/php/php.ini
+fi
 
 # Setup git variables
 if [ ! -z "$GIT_EMAIL" ]; then
@@ -143,6 +148,25 @@ if [ ! -z "$PHP_MEM_LIMIT" ]; then
  sed -i "s/memory_limit = 128M/memory_limit = ${PHP_MEM_LIMIT}M/g" /usr/local/etc/php/conf.d/docker-vars.ini
 fi
 
+
+# Increase PHP-FPM WORKER
+if [ ! -z "$FPM_MAX_WORKER" ]; then
+ sed -i "s/pm.max_children = 5/pm.max_children = ${FPM_MAX_WORKER}/g" /usr/local/etc/php-fpm.d/www.conf
+fi
+
+if [ ! -z "$FPM_START_WORKER" ]; then
+ sed -i "s/pm.start_servers = 2/pm.start_servers = ${FPM_START_WORKER}/g" /usr/local/etc/php-fpm.d/www.conf
+fi
+
+if [ ! -z "$FPM_SPARE_MIN_WORKER" ]; then
+ sed -i "s/pm.min_spare_servers = 1/pm.min_spare_servers = ${FPM_SPARE_MIN_WORKER}/g" /usr/local/etc/php-fpm.d/www.conf
+fi
+
+if [ ! -z "$FPM_SPARE_MAX_WORKER" ]; then
+ sed -i "s/pm.max_spare_servers = 3/pm.max_spare_servers = ${FPM_SPARE_MAX_WORKER}/g" /usr/local/etc/php-fpm.d/www.conf
+fi
+
+
 # Increase the post_max_size
 if [ ! -z "$PHP_POST_MAX_SIZE" ]; then
  sed -i "s/post_max_size = 100M/post_max_size = ${PHP_POST_MAX_SIZE}M/g" /usr/local/etc/php/conf.d/docker-vars.ini
@@ -170,8 +194,9 @@ if [[ "$ENABLE_XDEBUG" == "1" ]] ; then
             echo "Xdebug already enabled... skipping"
         else
             echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > $XdebugFile # Note, single arrow to overwrite file.
-            echo "xdebug.remote_enable=1 "  >> $XdebugFile
-            echo "xdebug.remote_host=host.docker.internal" >> $XdebugFile
+            echo "xdebug.start_with_request=yes"  >> $XdebugFile
+            echo "xdebug.client_host=host.docker.internal" >> $XdebugFile
+            echo "xdebug.mode=debug" >> $XdebugFile
             echo "xdebug.remote_log=/tmp/xdebug.log"  >> $XdebugFile
             echo "xdebug.remote_autostart=false "  >> $XdebugFile # I use the xdebug chrome extension instead of using autostart
             # NOTE: xdebug.remote_host is not needed here if you set an environment variable in docker-compose like so `- XDEBUG_CONFIG=remote_host=192.168.111.27`.
@@ -201,11 +226,14 @@ fi
 
 # Run custom scripts
 if [[ "$RUN_SCRIPTS" == "1" ]] ; then
-  if [ -d "/var/www/html/scripts/" ]; then
-    # make scripts executable incase they aren't
-    chmod -Rf 750 /var/www/html/scripts/*; sync;
+  scripts_dir="${SCRIPTS_DIR:-/var/www/html/scripts}"
+  if [ -d "$scripts_dir" ]; then
+    if [ -z "$SKIP_CHMOD" ]; then
+      # make scripts executable incase they aren't
+      chmod -Rf 750 $scripts_dir; sync;
+    fi
     # run scripts in number order
-    for i in `ls /var/www/html/scripts/`; do /var/www/html/scripts/$i ; done
+    for i in `ls $scripts_dir`; do $scripts_dir/$i ; done
   else
     echo "Can't find script directory"
   fi

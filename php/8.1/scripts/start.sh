@@ -148,6 +148,25 @@ if [ ! -z "$PHP_MEM_LIMIT" ]; then
  sed -i "s/memory_limit = 128M/memory_limit = ${PHP_MEM_LIMIT}M/g" /usr/local/etc/php/conf.d/docker-vars.ini
 fi
 
+
+# Increase PHP-FPM WORKER
+if [ ! -z "$FPM_MAX_WORKER" ]; then
+ sed -i "s/pm.max_children = 5/pm.max_children = ${FPM_MAX_WORKER}/g" /usr/local/etc/php-fpm.d/www.conf
+fi
+
+if [ ! -z "$FPM_START_WORKER" ]; then
+ sed -i "s/pm.start_servers = 2/pm.start_servers = ${FPM_START_WORKER}/g" /usr/local/etc/php-fpm.d/www.conf
+fi
+
+if [ ! -z "$FPM_SPARE_MIN_WORKER" ]; then
+ sed -i "s/pm.min_spare_servers = 1/pm.min_spare_servers = ${FPM_SPARE_MIN_WORKER}/g" /usr/local/etc/php-fpm.d/www.conf
+fi
+
+if [ ! -z "$FPM_SPARE_MAX_WORKER" ]; then
+ sed -i "s/pm.max_spare_servers = 3/pm.max_spare_servers = ${FPM_SPARE_MAX_WORKER}/g" /usr/local/etc/php-fpm.d/www.conf
+fi
+
+
 # Increase the post_max_size
 if [ ! -z "$PHP_POST_MAX_SIZE" ]; then
  sed -i "s/post_max_size = 100M/post_max_size = ${PHP_POST_MAX_SIZE}M/g" /usr/local/etc/php/conf.d/docker-vars.ini

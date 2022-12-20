@@ -41,3 +41,7 @@ The following flags are a list of all the currently supported options that can b
 | SKIP_CHOWN              | Set to 1 to avoid running chown -Rf on /var/www/html                                                           |
 | SKIP_CHMOD              | Set to 1 to avoid running chmod -Rf 750 on `SCRIPTS_DIR`                                                       |
 | SKIP_COMPOSER           | Set to 1 to avoid installing composer                                                                          |
+| FPM_MAX_WORKER          | Set Max PHP-FPM Worker, default is 4                                                                           |
+| FPM_START_WORKER        | Set Start PHP-FPM Worker, default is 3                                                                         |
+| FPM_SPARE_MIN_WORKER    | Set Min Spare PHP-FPM Worker, default is 2                                                                     |
+| FPM_SPARE_MAX_WORKER    | Set Max Spare PHP-FPM Worker, default is 4                                                                         |
