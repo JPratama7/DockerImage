@@ -1,4 +1,4 @@
-FROM php:8.1-fpm-alpine3.16
+FROM php:5.6-fpm-alpine
 
 LABEL maintainer="JPratama7 <josepratama080@gmail.com>"
 
@@ -126,7 +126,6 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
 #  test -z "$found" && echo >&2 "error: failed to fetch GPG key $GPG_KEYS" && exit 1; \
 #  gpg --batch --verify nginx.tar.gz.asc nginx.tar.gz \
   #&& rm -r "$GNUPGHOME" nginx.tar.gz.asc \
- 
   && tar -zxf nginx.tar.gz \
   && tar -zxf ndk.tar.gz \
   && tar -zxf lua.tar.gz \
@@ -286,8 +285,8 @@ RUN mkdir -p /etc/nginx/sites-available/ \
     && rm -Rf /var/www/* \
     && mkdir /var/www/html/
 
-ADD php/8.1/conf/nginx-site.conf /etc/nginx/sites-available/default.conf
-ADD php/8.1/conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
+ADD php/5.6/conf/nginx-site.conf /etc/nginx/sites-available/default.conf
+ADD php/5.6/conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
 RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
 
 # tweak php-fpm config
@@ -326,16 +325,16 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini \
 
 
 # Add Scripts
-ADD php/8.1/scripts/start.sh /start.sh
-ADD php/8.1/scripts/pull /usr/bin/pull
-ADD php/8.1/scripts/push /usr/bin/push
-ADD php/8.1/scripts/letsencrypt-setup /usr/bin/letsencrypt-setup
-ADD php/8.1/scripts/letsencrypt-renew /usr/bin/letsencrypt-renew
+ADD php/5.6/scripts/start.sh /start.sh
+ADD php/5.6/scripts/pull /usr/bin/pull
+ADD php/5.6/scripts/push /usr/bin/push
+ADD php/5.6/scripts/letsencrypt-setup /usr/bin/letsencrypt-setup
+ADD php/5.6/scripts/letsencrypt-renew /usr/bin/letsencrypt-renew
 RUN chmod 755 /usr/bin/pull && chmod 755 /usr/bin/push && chmod 755 /usr/bin/letsencrypt-setup && chmod 755 /usr/bin/letsencrypt-renew && chmod 755 /start.sh
 
 # copy in code
-ADD php/8.1/src/ /var/www/html/
-ADD php/8.1/errors/ /var/www/errors
+ADD php/5.6/src/ /var/www/html/
+ADD php/5.6/errors/ /var/www/errors
 
 
 EXPOSE 443 80

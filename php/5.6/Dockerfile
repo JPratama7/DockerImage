@@ -2,8 +2,8 @@ FROM php:8.1-fpm-alpine3.16
 
 LABEL maintainer="JPratama7 <josepratama080@gmail.com>"
 
-COPY --from=mlocati/php-extension-installer:latest /usr/bin/install-php-extensions /usr/local/bin/
 
+COPY --from=mlocati/php-extension-installer:latest /usr/bin/install-php-extensions /usr/local/bin/install-php-ext
 
 ENV php_conf=/usr/local/etc/php-fpm.conf \
     fpm_conf=/usr/local/etc/php-fpm.d/www.conf \
@@ -25,14 +25,6 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
 
 # resolves #166
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
-
-# Add ASP.NET 7
-#RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories \ 
-#    && echo http://dl-cdn.alpinelinux.org/alpine/edge/main >> /etc/apk/repositories \
-#    && apk update \
-#    && apk add dotnet7-runtime libcrypto3 libssl3 \
-#    && apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community -X http://dl-cdn.alpinelinux.org/alpine/edge/main aspnetcore7-runtime
-RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community --repository http://dl-cdn.alpinelinux.org/alpine/edge/main aspnetcore7-runtime
 
 RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv \ 
   && GPG_KEYS=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
@@ -211,7 +203,9 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
   \
   # forward request and error logs to docker log collector
   && ln -sf /dev/stdout /var/log/nginx/access.log \
-  && ln -sf /dev/stderr /var/log/nginx/error.log
+  && ln -sf /dev/stderr /var/log/nginx/error.log \
+  && mkdir /var/log/php/ \
+  && ln -sf /dev/stderr /var/log/php/error.log
 
 RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
     echo /etc/apk/respositories && \
@@ -232,7 +226,7 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     autoconf \
     make \
     openssl-dev \
-    libressl-dev \
+    libretls-dev \
     libzip-dev \
     bzip2-dev \
     icu-dev \
@@ -279,11 +273,11 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     apk del .sys-deps
 #    ln -s /usr/bin/php7 /usr/bin/php
 
-ADD php/8.1-net7/conf/supervisord.conf /etc/supervisord.conf
+ADD php/8.1/conf/supervisord.conf /etc/supervisord.conf
 
 # Copy our nginx config
 RUN rm -Rf /etc/nginx/nginx.conf
-ADD php/8.1-net7/conf/nginx.conf /etc/nginx/nginx.conf
+ADD php/8.1/conf/nginx.conf /etc/nginx/nginx.conf
 
 # nginx site conf
 RUN mkdir -p /etc/nginx/sites-available/ \
@@ -292,9 +286,8 @@ RUN mkdir -p /etc/nginx/sites-available/ \
     && rm -Rf /var/www/* \
     && mkdir /var/www/html/
 
-
-ADD php/8.1-net7/conf/nginx-site.conf /etc/nginx/sites-available/default.conf
-ADD php/8.1-net7/conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
+ADD php/8.1/conf/nginx-site.conf /etc/nginx/sites-available/default.conf
+ADD php/8.1/conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
 RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
 
 # tweak php-fpm config
@@ -303,6 +296,7 @@ RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
     echo "post_max_size = 100M"  >> ${php_vars} &&\
     echo "variables_order = \"EGPCS\""  >> ${php_vars} && \
     echo "memory_limit = 128M"  >> ${php_vars} && \
+    echo "error_log = /var/log/php/error.log" && \
     sed -i \
         -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" \
         -e "s/pm.max_children = 5/pm.max_children = 4/g" \
@@ -325,21 +319,23 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini \
 	    -e "s/;opcache/opcache/g" \
 	    -e "s/;zend_extension=opcache/zend_extension=opcache/g" \
             /usr/local/etc/php/php.ini \
-    && rm -rf /usr/src/ \
+#    && find /usr/src -type f -not \( -name 'php.tar.xz' \) -delete \
+    && cd /usr/src && rm -r `ls | grep -Ev 'php|openssl'` \
+    && cd `ls -d */ | grep openssl` && rm -r * \
     && rm -rf /var/cache/apk/*
 
 
 # Add Scripts
-ADD php/8.1-net7/scripts/start.sh /start.sh
-ADD php/8.1-net7/scripts/pull /usr/bin/pull
-ADD php/8.1-net7/scripts/push /usr/bin/push
-ADD php/8.1-net7/scripts/letsencrypt-setup /usr/bin/letsencrypt-setup
-ADD php/8.1-net7/scripts/letsencrypt-renew /usr/bin/letsencrypt-renew
+ADD php/8.1/scripts/start.sh /start.sh
+ADD php/8.1/scripts/pull /usr/bin/pull
+ADD php/8.1/scripts/push /usr/bin/push
+ADD php/8.1/scripts/letsencrypt-setup /usr/bin/letsencrypt-setup
+ADD php/8.1/scripts/letsencrypt-renew /usr/bin/letsencrypt-renew
 RUN chmod 755 /usr/bin/pull && chmod 755 /usr/bin/push && chmod 755 /usr/bin/letsencrypt-setup && chmod 755 /usr/bin/letsencrypt-renew && chmod 755 /start.sh
 
 # copy in code
-ADD php/8.1-net7/src/ /var/www/html/
-ADD php/8.1-net7/errors/ /var/www/errors
+ADD php/8.1/src/ /var/www/html/
+ADD php/8.1/errors/ /var/www/errors
 
 
 EXPOSE 443 80

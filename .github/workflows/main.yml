@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         build: [
-          "7.4", "8.1"
+          "7.4", "8.1", "5.6"
           ]
       fail-fast: false
     runs-on: ubuntu-latest
