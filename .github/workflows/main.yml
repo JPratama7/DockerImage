@@ -51,7 +51,7 @@ jobs:
           docker-squash -v -t jpratama7/php-fpm-nginx:${{ matrix.build }}-latest jpratama7/php-fpm-nginx:build-fat
           docker push jpratama7/php-fpm-nginx:${{ matrix.build }}-latest
           docker-squash -v -t jpratama7/php-fpm-nginx:${{ matrix.build }} jpratama7/php-fpm-nginx:build-fat
-          docker push jpratama7/php-fpm-nginx:${{ matrix.build }}
+          docker push jpratama7/php-fpm-nginx:${{ matrix.build }}-${{ steps.date.outputs.date }}
 
   Python:
     strategy:

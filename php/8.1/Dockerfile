@@ -8,7 +8,7 @@ COPY --from=mlocati/php-extension-installer:latest /usr/bin/install-php-extensio
 ENV php_conf=/usr/local/etc/php-fpm.conf \
     fpm_conf=/usr/local/etc/php-fpm.d/www.conf \
     php_vars=/usr/local/etc/php/conf.d/docker-vars.ini \
-    NGINX_VERSION=1.22.1 \
+    NGINX_VERSION=1.22.3 \
     LUA_MODULE_VERSION=0.10.22 \
     DEVEL_KIT_MODULE_VERSION=0.3.1 \
     VERSION_ZLIB=zlib-1.2.11 \
@@ -17,7 +17,7 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
     VERSION_ZLIB=1.2.13 \
     VERSION_LUA_RUSTY_CORE=0.1.24 \
     VERSION_RUSTY_LRU=0.13 \
-    VERSION_LUAJIT=2.1-20220915\
+    VERSION_LUAJIT=2.1-20230119\
     LUAJIT_LIB=/usr/local/lib \
     LUAJIT_INC=/usr/local/include/luajit-2.1 \
     LUA_RESTY_PATH=/usr/local/share/lua/5.1 \
@@ -26,7 +26,8 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
 # resolves #166
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
-RUN apk add --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/community gnu-libiconv \ 
+RUN  apk add --no-cache --virtual .openssl-deps openssl libretls \ 
+  && apk add --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/community gnu-libiconv \ 
   && GPG_KEYS=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
   && CONFIG="\
     --prefix=/etc/nginx \
@@ -75,8 +76,6 @@ RUN apk add --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/c
     --with-http_v2_module \
     --add-module=/usr/src/ngx_devel_kit-$DEVEL_KIT_MODULE_VERSION \
     --add-module=/usr/src/lua-nginx-module-$LUA_MODULE_VERSION \
-    --add-module= \
-    --with-openssl=/usr/src/$VERSION_OPENSSL \
     --with-zlib=/usr/src/zlib-$VERSION_ZLIB \
     --with-pcre=/usr/src/$VERSION_PCRE \
     --with-pcre-jit \
@@ -89,6 +88,8 @@ RUN apk add --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/c
       libc-dev \
       make \
       libtool \
+      openssl-dev \
+      libretls-dev \
       automake \
       linux-headers \
       curl \
@@ -148,7 +149,6 @@ RUN apk add --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/c
   && ./configure $CONFIG --with-debug \
             --with-cc-opt="${COMPILE_FLAGS/-O3/}" \
             --with-pcre-opt="$COMPILE_FLAGS" \
-            --with-openssl-opt="$COMPILE_FLAGS" \
             --with-ld-opt="-Wl,-O4,--sort-common,--gc-sections,--as-needed,-z,relro,-z,now" \
   && make -j$(getconf _NPROCESSORS_ONLN) \
   && mv objs/nginx objs/nginx-debug \
@@ -161,7 +161,6 @@ RUN apk add --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/c
             --with-cc-opt="$COMPILE_FLAGS"\
             --with-ld-opt="-Wl,-O4,--sort-common,--gc-sections,--as-needed,-z,relro,-z,now" \
             --with-pcre-opt="$COMPILE_FLAGS"\
-            --with-openssl-opt="$COMPILE_FLAGS"\
   && make -j$(getconf _NPROCESSORS_ONLN) \
   && make install \
   && rm -rf /etc/nginx/html/ \
