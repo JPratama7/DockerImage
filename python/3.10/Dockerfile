@@ -25,11 +25,11 @@ RUN set -eux; \
 		tk-dev \
 		uuid-dev \
 	; \
-	apt-get install -y clang-13 \
-	ln -sf /usr/bin/clang-13 /usr/bin/clang \ 
-	ln -sf /usr/bin/clang++-13 /usr/bin/clang++ \
-	ln -sf /usr/bin/lld-13 /usr/bin/lld \
-	ln -sf /usr/bin/opt-13 /usr/bin/opt-13 \
+	apt-get install -y clang-13; \
+	ln -sf /usr/bin/clang-13 /usr/bin/clang; \ 
+	ln -sf /usr/bin/clang++-13 /usr/bin/clang++; \
+	ln -sf /usr/bin/lld-13 /usr/bin/lld; \
+	ln -sf /usr/bin/opt-13 /usr/bin/opt; \
 	rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
@@ -68,7 +68,7 @@ RUN set -eux; \
 	; \
 	nproc="$(nproc)"; \
 	make -j "$nproc" EXTRA_CFLAGS="$FLAGS" LDFLAGS="$LINKER_FLAGS"; \
-	make install  EXTRA_CFLAGS="$FLAGS" LDFLAGS="$LINKER_FLAGS"; ; \
+	make install  EXTRA_CFLAGS="$FLAGS" LDFLAGS="$LINKER_FLAGS"; \
 	\
 # https://github.com/docker-library/python/issues/784
 # prevent accidental usage of a system installed libpython of the same version
@@ -132,7 +132,7 @@ RUN set -eux; \
 	; \
 	rm -f get-pip.py; \
 	\
-	pip --version \
+	pip --version; \
     pip install --no-cache-dir Cython==3.0.0a11
 
 ENV CC="/usr/bin/clang-13" \
