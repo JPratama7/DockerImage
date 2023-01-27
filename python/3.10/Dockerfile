@@ -32,6 +32,11 @@ RUN set -eux; \
 	ln -sf /usr/bin/clang++-13 /usr/bin/clang++; \
 	ln -sf /usr/bin/lld-13 /usr/bin/lld; \
 	ln -sf /usr/bin/opt-13 /usr/bin/opt; \
+	ln -sf /usr/bin/llvm-ar-13 /usr/bin/llvm-ar; \
+	ln -sf /usr/bin/llvm-as-13 /usr/bin/llvm-as; \
+	ln -sf /usr/bin/llvm-nm-13 /usr/bin/llvm-nm; \
+	ln -sf /usr/bin/llvm-objcopy-13 /usr/bin/llvm-objcopy; \
+	ln -sf /usr/bin/llvm-objdump-13 /usr/bin-objdump/llvm; \
 	rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
