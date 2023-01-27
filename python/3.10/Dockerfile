@@ -36,7 +36,7 @@ RUN set -eux; \
 	ln -sf /usr/bin/llvm-as-13 /usr/bin/llvm-as; \
 	ln -sf /usr/bin/llvm-nm-13 /usr/bin/llvm-nm; \
 	ln -sf /usr/bin/llvm-objcopy-13 /usr/bin/llvm-objcopy; \
-	ln -sf /usr/bin/llvm-objdump-13 /usr/bin-objdump/llvm; \
+	ln -sf /usr/bin/llvm-objdump-13 /usr/bin/llvm-objdump; \
 	rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
