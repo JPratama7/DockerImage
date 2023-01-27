@@ -16,7 +16,7 @@ ENV LANG C.UTF-8
 # CFLAGS
 ENV CC="/usr/bin/clang-13" \
     CXX="/usr/bin/clang++-13" \
-    CFLAGS="-Qunused-arguments -fdata-sections -ffunction-sections -flto=thin -mllvm -enable-cond-stores-vec -mllvm -slp-vectorize-hor-store -mllvm -enable-loopinterchange -mllvm -enable-loop-distribute -mllvm -enable-unroll-and-jam -mllvm -enable-loop-flatten -mllvm -unroll-runtime-multi-exit -mllvm -aggressive-ext-opt -mllvm -vectorize-loops -mllvm -vectorize-slp -mllvm -extra-vectorizer-passes -mllvm -interleave-small-loop-scalar-reduction -mllvm --isel-rebalance-addr -mllvm --loop-fusion-dependence-analysis=all -mllvm --loop-flatten-widen-iv -fdiagnostics-color=always -pipe -fstack-protector-strong --param ssp-buffer-size=4 -fstack-clash-protection -fslp-vectorize -fvectorize -mfpmath=sse" \
+    CFLAGS="-Qunused-arguments -fdata-sections -ffunction-sections -mllvm -enable-cond-stores-vec -mllvm -slp-vectorize-hor-store -mllvm -enable-loopinterchange -mllvm -enable-loop-distribute -mllvm -enable-unroll-and-jam -mllvm -enable-loop-flatten -mllvm -unroll-runtime-multi-exit -mllvm -aggressive-ext-opt -mllvm -vectorize-loops -mllvm -vectorize-slp -mllvm -extra-vectorizer-passes -mllvm -interleave-small-loop-scalar-reduction -mllvm --isel-rebalance-addr -mllvm --loop-fusion-dependence-analysis=all -mllvm --loop-flatten-widen-iv -fdiagnostics-color=always -pipe -fstack-protector-strong --param ssp-buffer-size=4 -fstack-clash-protection -fslp-vectorize -fvectorize -mfpmath=sse" \
     LDFLAGS="-Wl,-O4 -Wl,-z,now -Wl,-z,relro -Wl,--as-needed -Wl,--no-copy-dt-needed-entries -Wl,--sort-common -Wl,--hash-style=gnu -Wl,--gc-sections"
 
 # runtime dependencies
@@ -202,5 +202,7 @@ RUN set -eux; \
 	\
 	pip --version; \
     pip install --no-cache-dir Cython==3.0.0a11
+
+ENV CFLAGS="$CFLAGS -flto=thin"
 
 CMD ["python3"]
