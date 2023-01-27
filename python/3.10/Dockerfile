@@ -69,8 +69,8 @@ RUN set -eux; \
 		--without-ensurepip \
 	; \
 	nproc="$(nproc)"; \
-	make -j "$nproc" EXTRA_CFLAGS="$FLAGS" LDFLAGS="$LINKER_FLAGS"; \
-	make install  EXTRA_CFLAGS="$FLAGS" LDFLAGS="$LINKER_FLAGS"; \
+	make -j "$nproc"; \
+	make install ; \
 	\
 # https://github.com/docker-library/python/issues/784
 # prevent accidental usage of a system installed libpython of the same version
