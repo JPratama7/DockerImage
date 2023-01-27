@@ -13,7 +13,6 @@ ENV PATH /usr/local/bin:$PATH
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG C.UTF-8
 
-
 # CFLAGS
 ENV FLAGS="-pipe -fmodulo-sched -fmodulo-sched-allow-regmoves -fipa-pta -fgcse-lm -fgcse-sm -flive-range-shrinkage -fsched-pressure -fuse-linker-plugin -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure -ftree-loop-im" \
     LINKER_FLAGS="-Wl,-O4,--sort-common,--gc-sections,--as-needed,-z,relro,-z,now"
@@ -26,12 +25,23 @@ RUN set -eux; \
 		tk-dev \
 		uuid-dev \
 	; \
+	apt-get install -y clang-13 \
+	ln -sf /usr/bin/clang-13 /usr/bin/clang \ 
+	ln -sf /usr/bin/clang++-13 /usr/bin/clang++ \
+	ln -sf /usr/bin/lld-13 /usr/bin/lld \
+	ln -sf /usr/bin/opt-13 /usr/bin/opt-13 \
 	rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
-ENV PYTHON_VERSION 3.10.8
+ENV PYTHON_VERSION 3.10.9
 
 RUN set -eux; \
+	\
+	savedAptMark="$(apt-mark showmanual)"; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+		patchelf \
+	; \
 	\
 	wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz"; \
 	wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc"; \
@@ -58,17 +68,34 @@ RUN set -eux; \
 	; \
 	nproc="$(nproc)"; \
 	make -j "$nproc" EXTRA_CFLAGS="$FLAGS" LDFLAGS="$LINKER_FLAGS"; \
-	make install EXTRA_CFLAGS="$FLAGS" LDFLAGS="$LINKER_FLAGS"; \
+	make install  EXTRA_CFLAGS="$FLAGS" LDFLAGS="$LINKER_FLAGS"; ; \
+	\
+# https://github.com/docker-library/python/issues/784
+# prevent accidental usage of a system installed libpython of the same version
+	bin="$(readlink -vf /usr/local/bin/python3)"; \
+	patchelf --set-rpath '$ORIGIN/../lib' "$bin"; \
 	\
 # enable GDB to load debugging data: https://github.com/docker-library/python/pull/701
-	bin="$(readlink -ve /usr/local/bin/python3)"; \
 	dir="$(dirname "$bin")"; \
 	mkdir -p "/usr/share/gdb/auto-load/$dir"; \
 	cp -vL Tools/gdb/libpython.py "/usr/share/gdb/auto-load/$bin-gdb.py"; \
 	\
 	cd /; \
 	rm -rf /usr/src/python; \
+	\
+	find /usr/local -depth \
+		\( \
+			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
+			-o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
+		\) -exec rm -rf '{}' + \
+	; \
+	\
 	ldconfig; \
+	\
+	apt-mark auto '.*' > /dev/null; \
+	apt-mark manual $savedAptMark; \
+	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+	rm -rf /var/lib/apt/lists/*; \
 	\
 	python3 --version
 
@@ -82,9 +109,9 @@ RUN set -eux; \
 	done
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 22.2.2
+ENV PYTHON_PIP_VERSION 22.3.1
 # https://github.com/docker-library/python/issues/365
-ENV PYTHON_SETUPTOOLS_VERSION 63.2.0
+ENV PYTHON_SETUPTOOLS_VERSION 65.5.1
 # https://github.com/pypa/get-pip
 ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/66030fa03382b4914d4c4d0896961a0bdeeeb274/public/get-pip.py
 ENV PYTHON_GET_PIP_SHA256 1e501cf004eac1b7eb1f97266d28f995ae835d30250bec7f8850562703067dc6
@@ -105,7 +132,12 @@ RUN set -eux; \
 	; \
 	rm -f get-pip.py; \
 	\
-	pip --version; \
-    pip install nuitka
+	pip --version \
+    pip install --no-cache-dir Cython==3.0.0a11
+
+ENV CC="/usr/bin/clang-13" \
+    CXX="/usr/bin/clang++-13" \
+    CFLAGS="-Qunused-arguments -fdata-sections -ffunction-sections -flto=thin -mllvm -enable-cond-stores-vec -mllvm -slp-vectorize-hor-store -mllvm -enable-loopinterchange -mllvm -enable-loop-distribute -mllvm -enable-unroll-and-jam -mllvm -enable-loop-flatten -mllvm -unroll-runtime-multi-exit -mllvm -aggressive-ext-opt -mllvm -vectorize-loops -mllvm -vectorize-slp -mllvm -extra-vectorizer-passes -mllvm -interleave-small-loop-scalar-reduction -mllvm --isel-rebalance-addr -mllvm --loop-fusion-dependence-analysis=all -mllvm --loop-flatten-widen-iv -fdiagnostics-color=always -pipe -fstack-protector-strong --param ssp-buffer-size=4 -fstack-clash-protection -fslp-vectorize -fvectorize -mfpmath=sse" \
+    LDFLAGS="-Wl,-O4 -Wl,-z,now -Wl,-z,relro -Wl,--as-needed -Wl,--no-copy-dt-needed-entries -Wl,--sort-common -Wl,--hash-style=gnu -Wl,--gc-sections"
 
 CMD ["python3"]
