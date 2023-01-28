@@ -14,10 +14,7 @@ ENV PATH /usr/local/bin:$PATH
 ENV LANG C.UTF-8
 
 # CFLAGS
-ENV CC="/usr/bin/clang-13" \
-    CXX="/usr/bin/clang++-13" \
-    FLAG="-Qunused-arguments -fdata-sections -ffunction-sections -fdiagnostics-color=always -pipe -fstack-protector-strong --param ssp-buffer-size=4 -fstack-clash-protection -fslp-vectorize -fvectorize -mfpmath=sse" \
-    LINKFLAG="-Wl,-O4 -Wl,-z,now -Wl,-z,relro -Wl,--as-needed -Wl,--no-copy-dt-needed-entries -Wl,--sort-common -Wl,--hash-style=gnu -Wl,--gc-sections"
+ENV LINKFLAG="-Wl,-O4 -Wl,-z,now -Wl,-z,relro -Wl,--as-needed ---no-copy-dt-needed-entries -Wl,--sort-common -Wl,--hash-style=gnu -Wl,--gc-sections"
 
 # runtime dependencies
 RUN set -eux; \
