@@ -26,7 +26,7 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
 # resolves #166
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
-RUN  apk add --no-cache --virtual .openssl-deps openssl libretls \ 
+RUN apk add --no-cache --virtual .openssl-deps openssl libretls \ 
   && apk add --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/community gnu-libiconv \ 
   && GPG_KEYS=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
   && CONFIG="\

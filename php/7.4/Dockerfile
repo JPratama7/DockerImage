@@ -89,6 +89,8 @@ RUN apk add --no-cache --virtual .openssl-deps openssl libretls \
       make \
       libtool \
       automake \
+      openssl-dev \
+      libretls-dev \
       linux-headers \
       curl \
       gnupg \
