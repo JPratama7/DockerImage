@@ -106,7 +106,6 @@ RUN  apk add --no-cache --virtual .openssl-deps openssl libretls \
   && curl -fSL http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx.tar.gz.asc \
   && curl -fSL https://github.com/simpl/ngx_devel_kit/archive/v$DEVEL_KIT_MODULE_VERSION.tar.gz -o ndk.tar.gz \
   && curl -fSL https://github.com/openresty/lua-nginx-module/archive/v$LUA_MODULE_VERSION.tar.gz -o lua.tar.gz \
-  # && curl -fSL https://www.openssl.org/source/$VERSION_OPENSSL.tar.gz -o openssl.tar.gz \
   && curl -fSL https://github.com/madler/zlib/archive/v$VERSION_ZLIB.tar.gz -o zlib.tar.gz \
   && curl -fSL https://github.com/openresty/lua-resty-core/archive/v$VERSION_LUA_RUSTY_CORE.tar.gz -o rustycore.tar.gz \
   && curl -fSL https://github.com/openresty/lua-resty-lrucache/archive/v$VERSION_RUSTY_LRU.tar.gz -o rustylru.tar.gz \
@@ -130,7 +129,6 @@ RUN  apk add --no-cache --virtual .openssl-deps openssl libretls \
   && tar -zxf nginx.tar.gz \
   && tar -zxf ndk.tar.gz \
   && tar -zxf lua.tar.gz \
-  && tar -zxf openssl.tar.gz \
   && tar -zxf pcre.tar.gz \
   && tar -zxf zlib.tar.gz \
   && tar -zxf rustycore.tar.gz \

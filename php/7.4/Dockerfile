@@ -128,7 +128,6 @@ RUN apk add --no-cache --virtual .openssl-deps openssl libretls \
   && tar -zxf nginx.tar.gz \
   && tar -zxf ndk.tar.gz \
   && tar -zxf lua.tar.gz \
-  && tar -zxf openssl.tar.gz \
   && tar -zxf pcre.tar.gz \
   && tar -zxf zlib.tar.gz \
   && tar -zxf rustycore.tar.gz \
