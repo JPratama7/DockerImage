@@ -13,7 +13,7 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
     LUA_MODULE_VERSION=0.10.22 \
     DEVEL_KIT_MODULE_VERSION=0.3.1 \
     VERSION_ZLIB=zlib-1.2.11 \
-    VERSION_PCRE=pcre-8.45 \
+    VERSION_PCRE=pcre2-10.42 \
     VERSION_ZLIB=1.2.13 \
     VERSION_LUA_RUSTY_CORE=0.1.24 \
     VERSION_RUSTY_LRU=0.13 \
@@ -109,7 +109,7 @@ RUN apk add --no-cache --virtual .openssl-deps openssl libretls \
   && curl -fSL https://github.com/madler/zlib/archive/v$VERSION_ZLIB.tar.gz -o zlib.tar.gz \
   && curl -fSL https://github.com/openresty/lua-resty-core/archive/v$VERSION_LUA_RUSTY_CORE.tar.gz -o rustycore.tar.gz \
   && curl -fSL https://github.com/openresty/lua-resty-lrucache/archive/v$VERSION_RUSTY_LRU.tar.gz -o rustylru.tar.gz \
-  && curl -fSL https://onboardcloud.dl.sourceforge.net/project/pcre/pcre/8.45/$VERSION_PCRE.tar.gz -o pcre.tar.gz \
+  && curl -fSL https://github.com/PCRE2Project/pcre2/archive/$VERSION_PCRE.tar.gz -o pcre.tar.gz \
   && curl -fSL https://github.com/openresty/luajit2/archive/v$VERSION_LUAJIT.tar.gz -o luajit.tar.gz \
 #  && curl -fSL https://github.com/leev/ngx_http_geoip2_module/archive/$GEOIP2_MODULE_VERSION.tar.gz -o ngx_http_geoip2_module.tar.gz \
 #  && export GNUPGHOME="$(mktemp -d)" \
