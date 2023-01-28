@@ -14,7 +14,7 @@ ENV PATH /usr/local/bin:$PATH
 ENV LANG C.UTF-8
 
 # CFLAGS
-ENV LINKFLAG="-Wl,-O4 -Wl,-z,now -Wl,-z,relro -Wl,--as-needed ---no-copy-dt-needed-entries -Wl,--sort-common -Wl,--hash-style=gnu -Wl,--gc-sections"
+ENV LINKFLAG="-Wl,-O4 -Wl,-z,now -Wl,-z,relro -Wl,--as-needed,---no-copy-dt-needed-entries -Wl,--sort-common -Wl,--hash-style=gnu -Wl,--gc-sections"
 
 # runtime dependencies
 RUN set -eux; \
