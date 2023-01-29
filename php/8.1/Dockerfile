@@ -8,28 +8,24 @@ COPY --from=mlocati/php-extension-installer:latest /usr/bin/install-php-extensio
 ENV php_conf=/usr/local/etc/php-fpm.conf \
     fpm_conf=/usr/local/etc/php-fpm.d/www.conf \
     php_vars=/usr/local/etc/php/conf.d/docker-vars.ini \
-    NGINX_VERSION=1.22.1 \
-    LUA_MODULE_VERSION=0.10.22 \
-    DEVEL_KIT_MODULE_VERSION=0.3.1 \
-    VERSION_ZLIB=zlib-1.2.11 \
-    VERSION_PCRE=pcre2-10.42 \
-    # VERSION_OPENSSL=openssl-3.0.7 \
-    VERSION_ZLIB=1.2.13 \
-    VERSION_LUA_RUSTY_CORE=0.1.24 \
-    VERSION_RUSTY_LRU=0.13 \
-    VERSION_LUAJIT=2.1-20230119\
     LUAJIT_LIB=/usr/local/lib \
     LUAJIT_INC=/usr/local/include/luajit-2.1 \
     LUA_RESTY_PATH=/usr/local/share/lua/5.1 \
-    COMPILE_FLAGS="-O3 -pipe -fmodulo-sched -fmodulo-sched-allow-regmoves -flto -fipa-pta -fgcse-lm -fgcse-sm -flive-range-shrinkage -fsched-pressure -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-vectorize -ftree-loop-ivcanon -fivopts -ftree-loop-ivcanon  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure -ftree-loop-im"
+    COMPILE_FLAGS="-O3 -pipe -fmodulo-sched -fmodulo-sched-allow-regmoves -flto -fipa-ra -ftree-loop-linear -floop-block -floop-strip-mine -fsplit-paths -floop-unroll-and-jam -fipa-pta -fgcse-lm -fgcse-sm -flive-range-shrinkage -fsched-pressure -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-loop-ivcanon -fivopts  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure -ftree-loop-im"
 
-# resolves #166
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
+ARG NGINX_VERSION=1.22.1
+ARG LUA_MODULE_VERSION=0.10.22
+ARG DEVEL_KIT_MODULE_VERSION=0.3.1
+ARG VERSION_ZLIB=zlib-1.2.11
+ARG VERSION_PCRE=pcre-8.45
+ARG VERSION_ZLIB=1.2.13
+ARG VERSION_LUA_RUSTY_CORE=0.1.24
+ARG VERSION_RUSTY_LRU=0.13
+ARG VERSION_LUAJIT=2.1-20230119
+ARG VERSION_OPENSSL=openssl-3.0.7
+ARG SOURCE_FOLDER="/usr/src"
 
-RUN apk add --no-cache --virtual .openssl-deps openssl libretls \ 
-  && apk add --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/community gnu-libiconv \ 
-  && GPG_KEYS=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
-  && CONFIG="\
+ARG CONFIG="\
     --prefix=/etc/nginx \
     --sbin-path=/usr/sbin/nginx \
     --modules-path=/usr/lib/nginx/modules \
@@ -74,12 +70,19 @@ RUN apk add --no-cache --virtual .openssl-deps openssl libretls \
     --with-compat \
     --with-file-aio \
     --with-http_v2_module \
-    --add-module=/usr/src/ngx_devel_kit-$DEVEL_KIT_MODULE_VERSION \
+    --add-module=$SOURCE_FOLDER/ngx_devel_kit-$DEVEL_KIT_MODULE_VERSION \
     --add-module=/usr/src/lua-nginx-module-$LUA_MODULE_VERSION \
     --with-zlib=/usr/src/zlib-$VERSION_ZLIB \
-    --with-pcre=/usr/src/pcre2-$VERSION_PCRE \
+    --with-pcre=/usr/src/$VERSION_PCRE \
     --with-pcre-jit \
-  " \
+  "
+
+# resolves #166
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
+
+RUN apk add --no-cache --virtual .openssl-deps openssl libretls \ 
+  && apk add --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/community gnu-libiconv \ 
+  && GPG_KEYS=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
   && addgroup -S nginx \
   && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \ 
   && apk add --no-cache --virtual .build-deps \
@@ -109,7 +112,7 @@ RUN apk add --no-cache --virtual .openssl-deps openssl libretls \
   && curl -fSL https://github.com/madler/zlib/archive/v$VERSION_ZLIB.tar.gz -o zlib.tar.gz \
   && curl -fSL https://github.com/openresty/lua-resty-core/archive/v$VERSION_LUA_RUSTY_CORE.tar.gz -o rustycore.tar.gz \
   && curl -fSL https://github.com/openresty/lua-resty-lrucache/archive/v$VERSION_RUSTY_LRU.tar.gz -o rustylru.tar.gz \
-  && curl -fSL https://github.com/PCRE2Project/pcre2/archive/$VERSION_PCRE.tar.gz -o pcre.tar.gz \
+  && curl -fSL https://sourceforge.net/projects/pcre/files/pcre/8.45/$VERSION_PCRE.tar.gz/download -o pcre.tar.gz \
   && curl -fSL https://github.com/openresty/luajit2/archive/v$VERSION_LUAJIT.tar.gz -o luajit.tar.gz \
 #  && curl -fSL https://github.com/leev/ngx_http_geoip2_module/archive/$GEOIP2_MODULE_VERSION.tar.gz -o ngx_http_geoip2_module.tar.gz \
 #  && export GNUPGHOME="$(mktemp -d)" \
@@ -137,11 +140,11 @@ RUN apk add --no-cache --virtual .openssl-deps openssl libretls \
   && cd luajit2-$VERSION_LUAJIT \
   && CFLAGS="$COMPILE_FLAGS" make all && make install \
   && cd /usr/src/lua-resty-core-$VERSION_LUA_RUSTY_CORE \
-  && LUA_LIB_DIR=$LUA_RESTY_PATH make install \
+  && LUA_LIB_DIR=$LUA_RESTY_PATH CFLAGS="$COMPILE_FLAGS" make install \
   && cd /usr/src/lua-resty-lrucache-$VERSION_RUSTY_LRU \
-  && LUA_LIB_DIR=$LUA_RESTY_PATH make install \
-  && cd /usr/src/pcre2-$VERSION_PCRE \
-  && (./autogen.sh || ./configure) \
+  && LUA_LIB_DIR=$LUA_RESTY_PATH CFLAGS="$COMPILE_FLAGS" make install \
+  # && cd /usr/src/pcre2-$VERSION_PCRE \
+  # && (./autogen.sh || ./configure) \
   && cd /usr/src \
 #  && tar -zxC /usr/src -f ngx_http_geoip2_module.tar.gz \
 #  && rm nginx.tar.gz ndk.tar.gz lua.tar.gz ngx_http_geoip2_module.tar.gz \ 
