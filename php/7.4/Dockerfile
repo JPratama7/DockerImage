@@ -77,7 +77,7 @@ RUN apk add --no-cache --virtual .openssl-deps openssl libretls \
     --add-module=/usr/src/ngx_devel_kit-$DEVEL_KIT_MODULE_VERSION \
     --add-module=/usr/src/lua-nginx-module-$LUA_MODULE_VERSION \
     --with-zlib=/usr/src/zlib-$VERSION_ZLIB \
-    --with-pcre=/usr/src/$VERSION_PCRE \
+    --with-pcre=/usr/src/pcre2-$VERSION_PCRE \
     --with-pcre-jit \
   " \
   && addgroup -S nginx \
