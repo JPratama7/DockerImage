@@ -101,6 +101,7 @@ RUN apk add --no-cache --virtual .openssl-deps openssl libretls \
       xclip \
   && mkdir -p /usr/src \
   && cd /usr/src \
+  && ls -al \
   && echo "Downloading......" \
   && curl -fSL http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
   && curl -fSL http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx.tar.gz.asc \
@@ -135,6 +136,7 @@ RUN apk add --no-cache --virtual .openssl-deps openssl libretls \
   && tar -zxf rustycore.tar.gz \
   && tar -zxf rustylru.tar.gz \
   && tar -zxf luajit.tar.gz \
+  && ls -al \
   && cd luajit2-$VERSION_LUAJIT \
   && CFLAGS="$COMPILE_FLAGS" make all && make install \
   && cd /usr/src/lua-resty-core-$VERSION_LUA_RUSTY_CORE \
@@ -148,7 +150,6 @@ RUN apk add --no-cache --virtual .openssl-deps openssl libretls \
   && ./configure $CONFIG --with-debug \
             --with-cc-opt="${COMPILE_FLAGS/-O3/}" \
             --with-pcre-opt="$COMPILE_FLAGS" \
-            --with-openssl-opt="$COMPILE_FLAGS" \
             --with-ld-opt="-Wl,-O4,--sort-common,--gc-sections,--as-needed,-z,relro,-z,now" \
   && make -j$(getconf _NPROCESSORS_ONLN) \
   && mv objs/nginx objs/nginx-debug \
@@ -161,7 +162,6 @@ RUN apk add --no-cache --virtual .openssl-deps openssl libretls \
             --with-cc-opt="$COMPILE_FLAGS"\
             --with-ld-opt="-Wl,-O4,--sort-common,--gc-sections,--as-needed,-z,relro,-z,now" \
             --with-pcre-opt="$COMPILE_FLAGS"\
-            --with-openssl-opt="$COMPILE_FLAGS"\
   && make -j$(getconf _NPROCESSORS_ONLN) \
   && make install \
   && rm -rf /etc/nginx/html/ \
