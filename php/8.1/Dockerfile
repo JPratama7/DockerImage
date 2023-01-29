@@ -92,6 +92,7 @@ RUN apk add --no-cache --virtual .openssl-deps openssl libretls \
       make \
       libtool \
       openssl-dev \
+      file \
       libretls-dev \
       automake \
       linux-headers \
