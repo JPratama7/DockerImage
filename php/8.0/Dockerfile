@@ -140,6 +140,8 @@ RUN apk add --no-cache --virtual .openssl-deps openssl libretls \
   && LUA_LIB_DIR=$LUA_RESTY_PATH make install \
   && cd /usr/src/lua-resty-lrucache-$VERSION_RUSTY_LRU \
   && LUA_LIB_DIR=$LUA_RESTY_PATH make install \
+  && cd /usr/src/pcre2-$VERSION_PCRE \
+  && (./autogen.sh || ./configure)
   && cd /usr/src \
 #  && tar -zxC /usr/src -f ngx_http_geoip2_module.tar.gz \
 #  && rm nginx.tar.gz ndk.tar.gz lua.tar.gz ngx_http_geoip2_module.tar.gz \ 
