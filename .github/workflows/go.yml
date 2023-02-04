@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         build: [
-          "1.20"
+          "1.20", "1.19"
           ]
       fail-fast: false
     runs-on: ubuntu-latest
