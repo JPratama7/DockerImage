@@ -51,7 +51,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build Docker
         run : |
-          docker build -f go/${{ matrix.build }}/Dockerfile -t jpratama7/alpine-golang:build-fat-${{ matrix.build }} .
+          docker build -f golang/${{ matrix.build }}/Dockerfile -t jpratama7/alpine-golang:build-fat-${{ matrix.build }} .
           docker-squash -v -t jpratama7/alpine-golang:latest-${{ matrix.build }} jpratama7/alpine-golang:build-fat-${{ matrix.build }}
           docker-squash -v -t jpratama7/alpine-golang:${{ steps.date.outputs.date }}-${{ matrix.build }} jpratama7/alpine-golang:build-fat-${{ matrix.build }}
           docker push jpratama7/alpine-golang:${{ steps.date.outputs.date }}-${{ matrix.build }}
