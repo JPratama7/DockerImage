@@ -1,19 +1,19 @@
-name: Image Builder Python
+name: Image Builder Golang
 
 on:
   push:
     branches:
-    - python
+    - go
   workflow_dispatch:
     branches: 
-    - python
+    - go
 
 jobs:
-  Python:
+  go:
     strategy:
       matrix:
         build: [
-          "3.10"
+          "1.20"
           ]
       fail-fast: false
     runs-on: ubuntu-latest
@@ -51,8 +51,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build Docker
         run : |
-          docker build -f python/${{ matrix.build }}/Dockerfile -t jpratama7/bullseye-python:build-fat-${{ matrix.build }} .
-          docker-squash -v -t jpratama7/bullseye-python:latest-${{ matrix.build }} jpratama7/bullseye-python:build-fat-${{ matrix.build }}
-          docker-squash -v -t jpratama7/bullseye-python:${{ steps.date.outputs.date }}-${{ matrix.build }} jpratama7/bullseye-python:build-fat-${{ matrix.build }}
-          docker push jpratama7/bullseye-python:${{ steps.date.outputs.date }}-${{ matrix.build }}
-          docker push jpratama7/bullseye-python:latest-${{ matrix.build }}
+          docker build -f go/${{ matrix.build }}/Dockerfile -t jpratama7/alpine-golang:build-fat-${{ matrix.build }} .
+          docker-squash -v -t jpratama7/alpine-golang:latest-${{ matrix.build }} jpratama7/alpine-golang:build-fat-${{ matrix.build }}
+          docker-squash -v -t jpratama7/alpine-golang:${{ steps.date.outputs.date }}-${{ matrix.build }} jpratama7/alpine-golang:build-fat-${{ matrix.build }}
+          docker push jpratama7/alpine-golang:${{ steps.date.outputs.date }}-${{ matrix.build }}
+          docker push jpratama7/alpine-golang:latest-${{ matrix.build }}
