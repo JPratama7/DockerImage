@@ -1,4 +1,3 @@
 FROM golang:1.19-alpine3.17 as build
 
-RUN rm -rf .git LICENSE README.md \
-    && apk add --no-cache g++ musl-dev
+RUN apk add --no-cache g++ musl-dev binutils file
