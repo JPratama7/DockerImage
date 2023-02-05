@@ -14,7 +14,9 @@ ENV PATH /usr/local/bin:$PATH
 ENV LANG C.UTF-8
 
 # CFLAGS
-ENV LINKFLAG="-Wl,-O4 -Wl,-z,now -Wl,-z,relro -Wl,--as-needed -Wl,--sort-common -Wl,--hash-style=gnu -Wl,--gc-sections"
+ENV CC="/usr/bin/clang" \
+	CXX="/usr/bin/clang++" \
+	LINKFLAG="-Wl,-O4 -Wl,-z,now -Wl,-z,relro -Wl,--as-needed -Wl,--sort-common -Wl,--hash-style=gnu -Wl,--gc-sections"
 
 # runtime dependencies
 RUN set -eux; \
@@ -200,9 +202,7 @@ RUN set -eux; \
 	pip --version; \
     pip install --no-cache-dir Cython==3.0.0a11
 
-ENV CC="/usr/bin/clang" \
-	CXX="/usr/bin/clang++" \
-	CFLAGS="-Qunused-arguments -O3 -fno-semantic-interposition -fdata-sections -ffunction-sections -fdiagnostics-color=always -pipe -fstack-protector-strong --param ssp-buffer-size=4 -fstack-clash-protection -fslp-vectorize -fvectorize -mfpmath=sse -flto=thin -mllvm -enable-cond-stores-vec -mllvm -slp-vectorize-hor-store -mllvm -enable-loopinterchange -mllvm -enable-loop-distribute -mllvm -enable-unroll-and-jam -mllvm -enable-loop-flatten -mllvm -unroll-runtime-multi-exit -mllvm -aggressive-ext-opt -mllvm -vectorize-loops -mllvm -vectorize-slp -mllvm -extra-vectorizer-passes -mllvm -interleave-small-loop-scalar-reduction -mllvm -isel-rebalance-addr -mllvm -loop-fusion-dependence-analysis=all -mllvm -loop-flatten-widen-iv" \
+ENV CFLAGS="-Qunused-arguments -O3 -fno-semantic-interposition -fdata-sections -ffunction-sections -fdiagnostics-color=always -pipe -fstack-protector-strong --param ssp-buffer-size=4 -fstack-clash-protection -fslp-vectorize -fvectorize -mfpmath=sse -flto=thin -mllvm -enable-cond-stores-vec -mllvm -slp-vectorize-hor-store -mllvm -enable-loopinterchange -mllvm -enable-loop-distribute -mllvm -enable-unroll-and-jam -mllvm -enable-loop-flatten -mllvm -unroll-runtime-multi-exit -mllvm -aggressive-ext-opt -mllvm -vectorize-loops -mllvm -vectorize-slp -mllvm -extra-vectorizer-passes -mllvm -interleave-small-loop-scalar-reduction -mllvm -isel-rebalance-addr -mllvm -loop-fusion-dependence-analysis=all -mllvm -loop-flatten-widen-iv" \
 	LDFLAGS="$LINKFLAG"
 
 CMD ["python3"]
