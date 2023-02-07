@@ -5,8 +5,6 @@ on:
     branches:
     - go
   workflow_dispatch:
-    branches: 
-    - go
 
 jobs:
   go:
