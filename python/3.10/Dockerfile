@@ -23,6 +23,7 @@ RUN set -eux; \
 		libbluetooth-dev \
 		tk-dev \
 		uuid-dev \
+		lsb-release wget software-properties-common gnupg \
 	; \
 	bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"; \
 	apt-get install -y clang-15 lldb-15 lld-15 libllvm-15-ocaml-dev libllvm15 llvm-15 llvm-15-dev llvm-15-doc llvm-15-examples llvm-15-runtime; \
