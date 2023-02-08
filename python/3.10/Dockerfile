@@ -97,6 +97,8 @@ RUN set -eux; \
 	ln -sf /usr/bin/llvm-undname-15	/usr/bin/llvm-undname; \
 	ln -sf /usr/bin/llvm-windres-15	/usr/bin/llvm-windres; \
 	ln -sf /usr/bin/llvm-xray-15	/usr/bin/llvm-xray; \
+	ln -sf /usr/bin/ld.lld-15	/usr/bin/ld.lld; \
+	ln -sf /usr/bin/ld.lld-15	/usr/bin/ld; \
 	rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY A035C8C19219BA821ECEA86B64E628F8D684696D
