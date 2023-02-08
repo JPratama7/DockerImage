@@ -26,7 +26,7 @@ RUN set -eux; \
 		lsb-release wget software-properties-common gnupg \
 	; \
 	bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"; \
-	apt-get install -y clang-15 lldb-15 lld-15; \
+	apt-get install -y clang-15 lld-15; \
 	ln -sf /usr/bin/clang-15 /usr/bin/clang; \ 
 	ln -sf /usr/bin/clang++-15 /usr/bin/clang++; \
 	ln -sf /usr/bin/lld-15 /usr/bin/lld; \
