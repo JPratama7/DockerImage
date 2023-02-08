@@ -204,7 +204,7 @@ RUN set -eux; \
 
 ENV CC="/usr/bin/clang" \
 	CXX="/usr/bin/clang++" \
-	LD="/usr/bin/ld.lld"
+	LD="/usr/bin/ld.lld" \
 	CFLAGS="-Qunused-arguments -O3 -ftrivial-auto-var-init=pattern -fmerge-all-constants -fshort-enums -fno-semantic-interposition -fdata-sections -ffunction-sections -fdiagnostics-color=always -pipe -fstack-protector-strong --param ssp-buffer-size=4 -fstack-clash-protection -fslp-vectorize -fvectorize -mfpmath=sse -flto=thin -mllvm -enable-if-conversion -mllvm -inline-enable-cost-benefit-analysis -mllvm -data-sections -mllvm -function-sections -mllvm -polly-enable-simplify -mllvm -polly-enable-prune-unprofitable -mllvm -enable-cond-stores-vec -mllvm -slp-vectorize-hor-store -mllvm -enable-loopinterchange -mllvm -enable-loop-distribute -mllvm -enable-unroll-and-jam -mllvm -enable-loop-flatten -mllvm -unroll-runtime-multi-exit -mllvm -aggressive-ext-opt -mllvm -vectorize-loops -mllvm -vectorize-slp -mllvm -extra-vectorizer-passes -mllvm -interleave-small-loop-scalar-reduction -mllvm -isel-rebalance-addr -mllvm --loop-fusion-dependence-analysis=all -mllvm -loop-flatten-widen-iv" \
 	LDFLAGS="$LINKFLAG -Wl,--lto-O3 -Wl,-mllvm,-extra-vectorizer-passes -Wl,-mllvm,-enable-cond-stores-vec -Wl,-mllvm,-slp-vectorize-hor-store -Wl,-mllvm,-enable-loopinterchange -Wl,-mllvm,-enable-loop-distribute -Wl,-mllvm,-enable-unroll-and-jam -Wl,-mllvm,-enable-loop-flatten -Wl,-mllvm,-interleave-small-loop-scalar-reduction -Wl,-mllvm,-unroll-runtime-multi-exit -Wl,-mllvm,-aggressive-ext-opt"
 
