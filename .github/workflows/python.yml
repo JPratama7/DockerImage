@@ -5,8 +5,6 @@ on:
     branches:
     - python
   workflow_dispatch:
-    branches: 
-    - python
 
 jobs:
   Python:
