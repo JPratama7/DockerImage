@@ -243,7 +243,7 @@ RUN set -eux; \
 	; \
 	rm -f get-pip.py; \
 	\
-	pip --version
+	pip --version; \
     pip install --no-cache-dir Nuitka Cython==3.0.0a11
 
 ENV CC="/usr/bin/clang" \
