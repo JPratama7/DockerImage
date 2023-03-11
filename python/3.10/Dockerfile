@@ -14,7 +14,8 @@ ENV PATH /usr/local/bin:$PATH
 ENV LANG C.UTF-8
 
 # CFLAGS
-ENV LINKFLAG="-Wl,-O4 -Wl,-z,now -Wl,-z,relro -Wl,--as-needed -Wl,--sort-common -Wl,--hash-style=gnu -Wl,--gc-sections -Wl,--strip-all"
+ENV LINKFLAG="-Wl,-O4 -Wl,-z,now -Wl,-z,relro -Wl,--as-needed -Wl,--sort-common -Wl,--hash-style=gnu -Wl,--gc-sections -Wl,--strip-all" \
+	EXTRA="-fdata-sections -ffunction-sections"
 
 # runtime dependencies
 RUN set -eux; \
@@ -159,16 +160,16 @@ RUN set -eux; \
 	; \
 	nproc="$(nproc)"; \
 	make -j "$nproc" \
-		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
+		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-} ${EXTRA}" \
 		"LDFLAGS=${LDFLAGS:-}" \
 		"PROFILE_TASK=${PROFILE_TASK:-}" \
 	; \
 	\
 # https://github.com/docker-library/python/issues/784
 # prevent accidental usage of a system installed libpython of the same version
-		rm python; \
+	rm python; \
 	make -j "$nproc" \
-		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
+		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-} ${EXTRA}" \
 		"LDFLAGS=${LDFLAGS:--Wl},-rpath='\$\$ORIGIN/../lib'" \
 		"PROFILE_TASK=${PROFILE_TASK:-}" \
 		python \
