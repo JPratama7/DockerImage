@@ -4,7 +4,8 @@ on:
   push:
     branches:
     - python
-  workflow_dispatch:
+  schedule:
+    - cron: "0 0 */5 * *"
 
 jobs:
   Python:
