@@ -4,7 +4,8 @@ on:
   push:
     branches:
     - go
-  workflow_dispatch:
+  schedule:
+    - cron: "0 0 */5 * *"
 
 jobs:
   go:
