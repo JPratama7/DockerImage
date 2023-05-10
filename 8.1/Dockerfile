@@ -1,4 +1,4 @@
-FROM php:7.4-fpm-alpine
+FROM php:8.1.18-fpm-alpine3.17
 
 LABEL maintainer="JPratama7 <josepratama080@gmail.com>"
 
@@ -13,16 +13,14 @@ ENV php_conf=/usr/local/etc/php-fpm.conf \
     LUA_RESTY_PATH=/usr/local/share/lua/5.1 \
     COMPILE_FLAGS="-O3 -pipe -fmodulo-sched -fmodulo-sched-allow-regmoves -flto -fipa-ra -ftree-loop-linear -floop-block -floop-strip-mine -fsplit-paths -floop-unroll-and-jam -fipa-pta -fgcse-lm -fgcse-sm -flive-range-shrinkage -fsched-pressure -fuse-linker-plugin -ffat-lto-objects -ftree-vectorize -fdata-sections -ffunction-sections -mfpmath=sse -fgraphite-identity -ftree-loop-ivcanon -fivopts  -floop-interchange -floop-nest-optimize -floop-parallelize-all -ftree-loop-distribution -fira-hoist-pressure -fira-loop-pressure -ftree-loop-im"
 
-ARG NGINX_VERSION=1.22.1
-ARG LUA_MODULE_VERSION=0.10.22
-ARG DEVEL_KIT_MODULE_VERSION=0.3.1
-ARG VERSION_ZLIB=zlib-1.2.11
+ARG NGINX_VERSION=1.24.0
+ARG LUA_MODULE_VERSION=0.10.24
+ARG DEVEL_KIT_MODULE_VERSION=0.3.2
 ARG VERSION_PCRE=pcre-8.45
 ARG VERSION_ZLIB=1.2.13
-ARG VERSION_LUA_RUSTY_CORE=0.1.24
-ARG VERSION_RUSTY_LRU=0.13
+ARG VERSION_LUA_RUSTY_CORE=0.1.26
+ARG VERSION_RUSTY_LRU=0.14
 ARG VERSION_LUAJIT=2.1-20230119
-ARG VERSION_OPENSSL=openssl-3.0.7
 ARG SOURCE_FOLDER="/usr/src"
 
 ARG CONFIG="\
@@ -275,11 +273,11 @@ RUN echo @testing https://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk
     apk del .sys-deps
 #    ln -s /usr/bin/php7 /usr/bin/php
 
-ADD php/7.4/conf/supervisord.conf /etc/supervisord.conf
+ADD php/8.1/conf/supervisord.conf /etc/supervisord.conf
 
 # Copy our nginx config
 RUN rm -Rf /etc/nginx/nginx.conf
-ADD php/7.4/conf/nginx.conf /etc/nginx/nginx.conf
+ADD php/8.1/conf/nginx.conf /etc/nginx/nginx.conf
 
 # nginx site conf
 RUN mkdir -p /etc/nginx/sites-available/ \
@@ -288,8 +286,8 @@ RUN mkdir -p /etc/nginx/sites-available/ \
     && rm -Rf /var/www/* \
     && mkdir /var/www/html/
 
-ADD php/7.4/conf/nginx-site.conf /etc/nginx/sites-available/default.conf
-ADD php/7.4/conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
+ADD php/8.1/conf/nginx-site.conf /etc/nginx/sites-available/default.conf
+ADD php/8.1/conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
 RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
 
 # tweak php-fpm config
@@ -327,16 +325,16 @@ RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini \
 
 
 # Add Scripts
-ADD php/7.4/scripts/start.sh /start.sh
-ADD php/7.4/scripts/pull /usr/bin/pull
-ADD php/7.4/scripts/push /usr/bin/push
-ADD php/7.4/scripts/letsencrypt-setup /usr/bin/letsencrypt-setup
-ADD php/7.4/scripts/letsencrypt-renew /usr/bin/letsencrypt-renew
+ADD php/8.1/scripts/start.sh /start.sh
+ADD php/8.1/scripts/pull /usr/bin/pull
+ADD php/8.1/scripts/push /usr/bin/push
+ADD php/8.1/scripts/letsencrypt-setup /usr/bin/letsencrypt-setup
+ADD php/8.1/scripts/letsencrypt-renew /usr/bin/letsencrypt-renew
 RUN chmod 755 /usr/bin/pull && chmod 755 /usr/bin/push && chmod 755 /usr/bin/letsencrypt-setup && chmod 755 /usr/bin/letsencrypt-renew && chmod 755 /start.sh
 
 # copy in code
-ADD php/7.4/src/ /var/www/html/
-ADD php/7.4/errors/ /var/www/errors
+ADD php/8.1/src/ /var/www/html/
+ADD php/8.1/errors/ /var/www/errors
 
 
 EXPOSE 443 80
